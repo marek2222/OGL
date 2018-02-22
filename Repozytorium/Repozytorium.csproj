@@ -114,6 +114,12 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\Kategoria.cs" />
+    <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\OglContext.cs" />
+    <Compile Include="Models\Ogloszenie.cs" />
+    <Compile Include="Models\Ogloszenie_Kategoria.cs" />
+    <Compile Include="Models\Uzytkownik.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <PropertyGroup>

@@ -5,7 +5,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.Data.Entity.ModelConfiguration.Conventions;
 
-namespace OGL.Models
+namespace Repozytorium.Models
 {
   public class OglContext : IdentityDbContext
   {

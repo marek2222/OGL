@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace OGL.Models
+namespace Repozytorium.Models
 {
   public class Ogloszenie_Kategoria
   {
