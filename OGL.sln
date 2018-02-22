@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 14 for Web
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OGL", "OGL\OGL.csproj", "{172C76EC-A566-4539-8F32-66F040ACA9E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OGL.Tests", "OGL.Tests\OGL.Tests.csproj", "{122095F3-F12E-43B0-B6D8-0C178A917450}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repozytorium", "Repozytorium\Repozytorium.csproj", "{448EF27F-2161-4EF7-894C-9852C25F3D47}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{172C76EC-A566-4539-8F32-66F040ACA9E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{172C76EC-A566-4539-8F32-66F040ACA9E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{172C76EC-A566-4539-8F32-66F040ACA9E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{172C76EC-A566-4539-8F32-66F040ACA9E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{122095F3-F12E-43B0-B6D8-0C178A917450}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{122095F3-F12E-43B0-B6D8-0C178A917450}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{122095F3-F12E-43B0-B6D8-0C178A917450}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{122095F3-F12E-43B0-B6D8-0C178A917450}.Release|Any CPU.Build.0 = Release|Any CPU
+		{448EF27F-2161-4EF7-894C-9852C25F3D47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{448EF27F-2161-4EF7-894C-9852C25F3D47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{448EF27F-2161-4EF7-894C-9852C25F3D47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{448EF27F-2161-4EF7-894C-9852C25F3D47}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
