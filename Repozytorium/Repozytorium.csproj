@@ -126,6 +126,10 @@
     <Compile Include="Migrations\201802221454554_startowa.Designer.cs">
       <DependentUpon>201802221454554_startowa.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201802221748394_1.cs" />
+    <Compile Include="Migrations\201802221748394_1.Designer.cs">
+      <DependentUpon>201802221748394_1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Views\AccountViewModels.cs" />
     <Compile Include="Models\Kategoria.cs" />
@@ -138,6 +142,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201802221454554_startowa.resx">
       <DependentUpon>201802221454554_startowa.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802221748394_1.resx">
+      <DependentUpon>201802221748394_1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
