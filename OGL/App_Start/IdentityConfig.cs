@@ -11,7 +11,6 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using OGL.Models;
-using Repozytorium.Models;
 
 namespace OGL
 {
@@ -34,16 +33,16 @@ namespace OGL
     }
 
     // Configure the application user manager used in this application. UserManager is defined in ASP.NET Identity and is used by the application.
-    public class ApplicationUserManager : UserManager<Uzytkownik>
+    public class UzytkownikManager : UserManager<Uzytkownik>
     {
-        public ApplicationUserManager(IUserStore<Uzytkownik> store)
+        public UzytkownikManager(IUserStore<Uzytkownik> store)
             : base(store)
         {
         }
 
-        public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context) 
+        public static UzytkownikManager Create(IdentityFactoryOptions<UzytkownikManager> options, IOwinContext context) 
         {
-            var manager = new ApplicationUserManager(new UserStore<Uzytkownik>(context.Get<OglContext>()));
+            var manager = new UzytkownikManager(new UserStore<Uzytkownik>(context.Get<OglContext>()));
             // Configure validation logic for usernames
             manager.UserValidator = new UserValidator<Uzytkownik>(manager)
             {
@@ -92,19 +91,19 @@ namespace OGL
     // Configure the application sign-in manager which is used in this application.
     public class ApplicationSignInManager : SignInManager<Uzytkownik, string>
     {
-        public ApplicationSignInManager(ApplicationUserManager userManager, IAuthenticationManager authenticationManager)
+        public ApplicationSignInManager(UzytkownikManager userManager, IAuthenticationManager authenticationManager)
             : base(userManager, authenticationManager)
         {
         }
 
         public override Task<ClaimsIdentity> CreateUserIdentityAsync(Uzytkownik user)
         {
-            return user.GenerateUserIdentityAsync((ApplicationUserManager)UserManager);
+            return user.GenerateUserIdentityAsync((UzytkownikManager)UserManager);
         }
 
         public static ApplicationSignInManager Create(IdentityFactoryOptions<ApplicationSignInManager> options, IOwinContext context)
         {
-            return new ApplicationSignInManager(context.GetUserManager<ApplicationUserManager>(), context.Authentication);
+            return new ApplicationSignInManager(context.GetUserManager<UzytkownikManager>(), context.Authentication);
         }
     }
 }

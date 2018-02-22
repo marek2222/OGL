@@ -1,13 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Express 14 for Web
-VisualStudioVersion = 14.0.25420.1
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OGL", "OGL\OGL.csproj", "{172C76EC-A566-4539-8F32-66F040ACA9E3}"
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OGL", "OGL\OGL.csproj", "{3F491063-C7A5-4AB9-BB63-2706D74BAE08}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OGL.Tests", "OGL.Tests\OGL.Tests.csproj", "{122095F3-F12E-43B0-B6D8-0C178A917450}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OGL.Tests", "OGL.Tests\OGL.Tests.csproj", "{6B202C25-F95C-419F-99D3-22B8E80325DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repozytorium", "Repozytorium\Repozytorium.csproj", "{448EF27F-2161-4EF7-894C-9852C25F3D47}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{C60349E9-3714-400F-AC10-AA97391CB58A}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\packages.config = .nuget\packages.config
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,18 +16,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{172C76EC-A566-4539-8F32-66F040ACA9E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{172C76EC-A566-4539-8F32-66F040ACA9E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{172C76EC-A566-4539-8F32-66F040ACA9E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{172C76EC-A566-4539-8F32-66F040ACA9E3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{122095F3-F12E-43B0-B6D8-0C178A917450}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{122095F3-F12E-43B0-B6D8-0C178A917450}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{122095F3-F12E-43B0-B6D8-0C178A917450}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{122095F3-F12E-43B0-B6D8-0C178A917450}.Release|Any CPU.Build.0 = Release|Any CPU
-		{448EF27F-2161-4EF7-894C-9852C25F3D47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{448EF27F-2161-4EF7-894C-9852C25F3D47}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{448EF27F-2161-4EF7-894C-9852C25F3D47}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{448EF27F-2161-4EF7-894C-9852C25F3D47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F491063-C7A5-4AB9-BB63-2706D74BAE08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F491063-C7A5-4AB9-BB63-2706D74BAE08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F491063-C7A5-4AB9-BB63-2706D74BAE08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F491063-C7A5-4AB9-BB63-2706D74BAE08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B202C25-F95C-419F-99D3-22B8E80325DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B202C25-F95C-419F-99D3-22B8E80325DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B202C25-F95C-419F-99D3-22B8E80325DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B202C25-F95C-419F-99D3-22B8E80325DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

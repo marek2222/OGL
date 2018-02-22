@@ -6,7 +6,7 @@
     <ProductVersion>
     </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{122095F3-F12E-43B0-B6D8-0C178A917450}</ProjectGuid>
+    <ProjectGuid>{6B202C25-F95C-419F-99D3-22B8E80325DC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>OGL.Tests</RootNamespace>
@@ -93,7 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OGL\OGL.csproj">
-      <Project>{172C76EC-A566-4539-8F32-66F040ACA9E3}</Project>
+      <Project>{3F491063-C7A5-4AB9-BB63-2706D74BAE08}</Project>
       <Name>OGL</Name>
     </ProjectReference>
   </ItemGroup>
