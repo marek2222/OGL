@@ -122,6 +122,10 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Migrations\201802221454554_startowa.cs" />
+    <Compile Include="Migrations\201802221454554_startowa.Designer.cs">
+      <DependentUpon>201802221454554_startowa.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Views\AccountViewModels.cs" />
     <Compile Include="Models\Kategoria.cs" />
@@ -130,6 +134,11 @@
     <Compile Include="Models\Ogloszenie_Kategoria.cs" />
     <Compile Include="Models\Uzytkownik.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201802221454554_startowa.resx">
+      <DependentUpon>201802221454554_startowa.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
