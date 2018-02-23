@@ -124,11 +124,7 @@ namespace OGL.Controllers
     [ValidateAntiForgeryToken]
     public ActionResult DeleteConfirmed(int id)
     {
-      for (int i = 0; i < 3; i++)
-      {
-        if (_repo.UsunOgloszenie(id))
-          break;
-      }
+      _repo.UsunOgloszenie(id);
       return RedirectToAction("Index");
     }
 
