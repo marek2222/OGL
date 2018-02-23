@@ -22,3 +22,14 @@ select,
 textarea {
     max-width: 280px;
 }
+
+/* Podświetlenia do pierwszego wiersza z nagłówkami (<th>):*/
+tr:first-child  {    
+  background-color:#efefef; 
+}
+/* Następnie podświetl wiersz po najechaniu na niego (<tr>): */
+tr:hover td{    
+  background-color:#efefef; 
+} 
+/* oraz dodaj odstępy pomiędzy przyciskami: */
+.btn {    margin:2px; }
