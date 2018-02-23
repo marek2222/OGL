@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Repozytorium.Models;
+using System.Diagnostics;
 
 namespace OGL.Controllers
 {
@@ -14,9 +15,11 @@ namespace OGL.Controllers
   {
     private OglContext db = new OglContext();
 
+
     // GET: /Ogloszenie/
     public ActionResult Index()
     {
+      db.Database.Log = message=> Trace.WriteLine(message);
       var ogloszenia = db.Ogloszenia.Include(o => o.Uzytkownik);
       return View(ogloszenia.ToList());
     }
