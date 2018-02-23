@@ -19,8 +19,8 @@ namespace Repozytorium.Migrations
     protected override void Seed(Repozytorium.Models.OglContext context)
     {
       // Do debugowania metody seed
-      if (System.Diagnostics.Debugger.IsAttached == false)
-        System.Diagnostics.Debugger.Launch();
+      //if (System.Diagnostics.Debugger.IsAttached == false)
+      //  System.Diagnostics.Debugger.Launch();
       SeedRoles(context);
       SeedUsers(context);
       SeedOgloszenia(context);
