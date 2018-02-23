@@ -26,5 +26,22 @@ namespace Repozytorium.Repo
       return ogloszenie;
     }
 
+    public bool UsunOgloszenie(int id)
+    {
+      Ogloszenie ogloszenie = _db.Ogloszenia.Find(id);
+      _db.Ogloszenia.Remove(ogloszenie);
+      try
+      {
+        _db.SaveChanges();
+        return true;
+      }
+      catch (System.Exception)
+      {
+        return false;
+      }
+
+    }
+
+
   }
 }

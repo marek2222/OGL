@@ -20,7 +20,7 @@ namespace OGL.Controllers
     private readonly IOgloszenieRepo _repo;
     public OgloszenieController(IOgloszenieRepo repo)
     {
-       _repo = repo;       
+      _repo = repo;
     }
 
     // GET: /Ogloszenie/
@@ -38,7 +38,7 @@ namespace OGL.Controllers
       {
         return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
       }
-      Ogloszenie ogloszenie = _repo.GetOgloszenieById((int)id); 
+      Ogloszenie ogloszenie = _repo.GetOgloszenieById((int)id);
       if (ogloszenie == null)
       {
         return HttpNotFound();
@@ -104,31 +104,33 @@ namespace OGL.Controllers
     //  return View(ogloszenie);
     //}
 
-    //// GET: /Ogloszenie/Delete/5
-    //public ActionResult Delete(int? id)
-    //{
-    //  if (id == null)
-    //  {
-    //    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-    //  }
-    //  Ogloszenie ogloszenie = db.Ogloszenia.Find(id);
-    //  if (ogloszenie == null)
-    //  {
-    //    return HttpNotFound();
-    //  }
-    //  return View(ogloszenie);
-    //}
+    // GET: /Ogloszenie/Delete/5
+    public ActionResult Delete(int? id)
+    {
+      if (id == null)
+      {
+        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+      }
+      Ogloszenie ogloszenie = _repo.GetOgloszenieById((int)id);
+      if (ogloszenie == null)
+      {
+        return HttpNotFound();
+      }
+      return View(ogloszenie);
+    }
 
-    //// POST: /Ogloszenie/Delete/5
-    //[HttpPost, ActionName("Delete")]
-    //[ValidateAntiForgeryToken]
-    //public ActionResult DeleteConfirmed(int id)
-    //{
-    //  Ogloszenie ogloszenie = db.Ogloszenia.Find(id);
-    //  db.Ogloszenia.Remove(ogloszenie);
-    //  db.SaveChanges();
-    //  return RedirectToAction("Index");
-    //}
+    // POST: /Ogloszenie/Delete/5
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public ActionResult DeleteConfirmed(int id)
+    {
+      for (int i = 0; i < 3; i++)
+      {
+        if (_repo.UsunOgloszenie(id))
+          break;
+      }
+      return RedirectToAction("Index");
+    }
 
     //protected override void Dispose(bool disposing)
     //{
