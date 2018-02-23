@@ -7,11 +7,16 @@ namespace Repozytorium.Repo
 {
   public class OgloszenieRepo : IOgloszenieRepo
   {
-    private OglContext db = new OglContext();
+    private readonly IOglContext _db;
+    public OgloszenieRepo(IOglContext db)
+    {
+      _db = db;
+    }
+
     public IQueryable<Ogloszenie> PobierzOgloszenia()
     {
-      db.Database.Log = message => Trace.WriteLine(message);
-      var ogloszenia = db.Ogloszenia.AsNoTracking();
+      _db.Database.Log = message => Trace.WriteLine(message);
+      var ogloszenia = _db.Ogloszenia.AsNoTracking();
       return ogloszenia;
     }
   }
