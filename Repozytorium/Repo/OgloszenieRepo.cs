@@ -1,22 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq;
-using System.Web;
+using Repozytorium.IRepo;
 using Repozytorium.Models;
 
 namespace Repozytorium.Repo
 {
-  public class OgloszenieRepo
+  public class OgloszenieRepo : IOgloszenieRepo
   {
     private OglContext db = new OglContext();
-
-
     public IQueryable<Ogloszenie> PobierzOgloszenia()
     {
       db.Database.Log = message => Trace.WriteLine(message);
-      return db.Ogloszenia.AsNoTracking();
+      var ogloszenia = db.Ogloszenia.AsNoTracking();
+      return ogloszenia;
     }
-
   }
 }

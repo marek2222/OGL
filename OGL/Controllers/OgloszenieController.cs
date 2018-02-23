@@ -9,19 +9,24 @@ using System.Web.Mvc;
 using Repozytorium.Models;
 using System.Diagnostics;
 using Repozytorium.Repo;
+using Repozytorium.IRepo;
 
 
 namespace OGL.Controllers
 {
   public class OgloszenieController : Controller
   {
-    private OgloszenieRepo repo = new OgloszenieRepo();
-    
+
+    private readonly IOgloszenieRepo _repo;
+    public OgloszenieController(IOgloszenieRepo repo)
+    {
+       _repo = repo;       
+    }
 
     // GET: /Ogloszenie/
     public ActionResult Index()
     {
-      var ogloszenia = repo.PobierzOgloszenia();
+      var ogloszenia = _repo.PobierzOgloszenia();
       return View(ogloszenia.ToList());
     }
 

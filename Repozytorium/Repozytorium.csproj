@@ -122,6 +122,7 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IRepo\IOgloszenieRepo.cs" />
     <Compile Include="Migrations\201802221454554_startowa.cs" />
     <Compile Include="Migrations\201802221454554_startowa.Designer.cs">
       <DependentUpon>201802221454554_startowa.cs</DependentUpon>
