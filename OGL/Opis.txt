@@ -6,6 +6,16 @@ przez kontekst.
   var ogloszenia = db.Ogloszenia.Include(o => o.Uzytkownik);    
   return View(ogloszenia.ToList()); 
 
+//wyłączony Lazy Loading
+var ogloszenia = db.Ogloszenia.Include(o => o.Uzytkownik);
+//włączony Lazy Loading
+var ogloszenia = db.Ogloszenia.AsNoTracking();
+
+Ogłoszenia do natychmistowedgo wykonania 
+return View(ogloszenia.ToList());
+
+Po usunięciu metody ToList(), nie ma potrzeby natychmiastowego pobierania danych
+return View(ogloszenia);
 
 
 
