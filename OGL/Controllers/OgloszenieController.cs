@@ -31,20 +31,20 @@ namespace OGL.Controllers
     }
 
 
-    //// GET: /Ogloszenie/Details/5
-    //public ActionResult Details(int? id)
-    //{
-    //  if (id == null)
-    //  {
-    //    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-    //  }
-    //  Ogloszenie ogloszenie = db.Ogloszenia.Find(id);
-    //  if (ogloszenie == null)
-    //  {
-    //    return HttpNotFound();
-    //  }
-    //  return View(ogloszenie);
-    //}
+    // GET: /Ogloszenie/Details/5
+    public ActionResult Details(int? id)
+    {
+      if (id == null)
+      {
+        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+      }
+      Ogloszenie ogloszenie = _repo.GetOgloszenieById((int)id); 
+      if (ogloszenie == null)
+      {
+        return HttpNotFound();
+      }
+      return View(ogloszenie);
+    }
 
     //// GET: /Ogloszenie/Create
     //public ActionResult Create()

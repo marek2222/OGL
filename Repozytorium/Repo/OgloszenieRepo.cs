@@ -19,5 +19,12 @@ namespace Repozytorium.Repo
       var ogloszenia = _db.Ogloszenia.AsNoTracking();
       return ogloszenia;
     }
+
+    public Ogloszenie GetOgloszenieById(int id)
+    {
+      Ogloszenie ogloszenie = _db.Ogloszenia.Find(id);
+      return ogloszenie;
+    }
+
   }
 }
