@@ -1,0 +1,12 @@
+﻿
+
+W pliku OgloszenieController usuń z zapytania w akcji Index metodę Include(), która wyłącza Lazy Loading 
+(ładuje dane użytkowników dla ogłoszeń), oraz dodaj metodę AsNoTracking(), która wyłączy śledzenie danych 
+przez kontekst.
+  var ogloszenia = db.Ogloszenia.Include(o => o.Uzytkownik);    
+  return View(ogloszenia.ToList()); 
+
+
+
+
+

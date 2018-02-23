@@ -20,7 +20,10 @@ namespace OGL.Controllers
     public ActionResult Index()
     {
       db.Database.Log = message=> Trace.WriteLine(message);
-      var ogloszenia = db.Ogloszenia.Include(o => o.Uzytkownik);
+      //wyłączony Lazy Loading
+      //var ogloszenia = db.Ogloszenia.Include(o => o.Uzytkownik);
+      //włączony Lazy Loading
+      var ogloszenia = db.Ogloszenia.AsNoTracking();
       return View(ogloszenia.ToList());
     }
 
