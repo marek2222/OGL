@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
 using Repozytorium.IRepo;
 using Repozytorium.Models;
@@ -29,6 +30,11 @@ namespace Repozytorium.Repo
     public void Dodaj(Ogloszenie ogloszenie)
     {
         _db.Ogloszenia.Add(ogloszenie);
+    }
+
+    public void Aktualizuj(Ogloszenie ogloszenie)
+    {
+      _db.Entry(ogloszenie).State = EntityState.Modified;
     }
 
     public void UsunOgloszenie(int id)

@@ -8,6 +8,7 @@ namespace Repozytorium.IRepo
     IQueryable<Ogloszenie> PobierzOgloszenia();
     Ogloszenie GetOgloszenieById(int id);
     void Dodaj(Ogloszenie ogloszenie);
+    void Aktualizuj(Ogloszenie ogloszenie);
     void UsunOgloszenie(int id);
     void SaveChanges();
   }

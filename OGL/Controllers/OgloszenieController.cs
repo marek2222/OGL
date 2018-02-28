@@ -106,11 +106,19 @@ namespace OGL.Controllers
     {
       if (ModelState.IsValid)
       {
-        db.Entry(ogloszenie).State = EntityState.Modified;
-        db.SaveChanges();
-        return RedirectToAction("Index");
+        try
+        {
+          _repo.Aktualizuj(ogloszenie);
+          _repo.SaveChanges();
+          //return RedirectToAction("Index");
+        }
+        catch (Exception ex)
+        {
+          ViewBag.Blad = true;
+          return View(ogloszenie);
+        }
       }
-      ViewBag.UzytkownikId = new SelectList(db.Users, "Id", "Email", ogloszenie.UzytkownikId);
+      ViewBag.Blad = false;
       return View(ogloszenie);
     }
 
