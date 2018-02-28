@@ -47,6 +47,5 @@ namespace Repozytorium.Repo
         _db.SaveChanges();
     }
 
-
   }
 }

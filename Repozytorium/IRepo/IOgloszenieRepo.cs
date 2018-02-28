@@ -7,7 +7,7 @@ namespace Repozytorium.IRepo
   {
     IQueryable<Ogloszenie> PobierzOgloszenia();
     Ogloszenie GetOgloszenieById(int id);
-    bool UsunOgloszenie(int id);
+    void UsunOgloszenie(int id);
     void SaveChanges();
   }
 }
