@@ -26,6 +26,11 @@ namespace Repozytorium.Repo
       return ogloszenie;
     }
 
+    public void Dodaj(Ogloszenie ogloszenie)
+    {
+        _db.Ogloszenia.Add(ogloszenie);
+    }
+
     public void UsunOgloszenie(int id)
     {
       UsunPowiazanieOgloszenieKategoria(id);

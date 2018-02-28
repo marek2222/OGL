@@ -1,10 +1,27 @@
 ﻿@model Repozytorium.Models.Ogloszenie
 
 @{
-    ViewBag.Title = "Edit";
+  ViewBag.Tytul = "Edytujesz ogłoszenie nr" + Model.Id;
+  ViewBag.Opis = "Edytujesz ogłoszenie nr" + Model.Id + " Opis do Google";
+  ViewBag.SlowaKluczowe = "Edytujesz, ogłoszenie, " + Model.Id; 
 }
 
-<h2>Edit</h2>
+<h2>Edytujesz oglodzenie nr: @Model.Id</h2>
+@if (ViewBag.Blad == true)
+{
+  <div class="alert alert-danger" role="alert">
+    Wystąpił błąd podczas edycji.<br />
+    Spróbuj ponownie.
+  </div>
+}
+else if (ViewBag.Blad == false)
+{
+  <div class="alert alert-success" role="alert">
+    Pomyślnie edytowano. <br />
+    Twoje ogłoszenie wygląda teraz następująco:
+  </div>
+}
+
 
 
 @using (Html.BeginForm())
@@ -33,32 +50,19 @@
             </div>
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.DataDodania, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.DataDodania)
-                @Html.ValidationMessageFor(model => model.DataDodania)
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.UzytkownikId, "UzytkownikId", new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("UzytkownikId", String.Empty)
-                @Html.ValidationMessageFor(model => model.UzytkownikId)
-            </div>
-        </div>
+        @Html.HiddenFor(m => m.DataDodania)
+        @Html.HiddenFor(m => m.UzytkownikId)
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" value="Zapisz" class="btn btn-success" />
             </div>
         </div>
     </div>
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Wróć", "Index", null, new {@class="btn btn-warning"})
 </div>
 
 @section Scripts {
