@@ -26,33 +26,27 @@ namespace Repozytorium.Repo
       return ogloszenie;
     }
 
-    public bool UsunOgloszenie(int id)
+    public void UsunOgloszenie(int id)
     {
       UsunPowiazanieOgloszenieKategoria(id);
       Ogloszenie ogloszenie = _db.Ogloszenia.Find(id);
       _db.Ogloszenia.Remove(ogloszenie);
-      try
-      {
-        _db.SaveChanges();
-        return true;
-      }
-      catch (System.Exception ex)
-      {
-        return false;
-      }
     }
-
 
     private void UsunPowiazanieOgloszenieKategoria(int idOgloszenia)
     {
-      var list = _db.Ogloszenie_Kategoria.Where(x=>x.OgloszenieId == idOgloszenia);
+      var list = _db.Ogloszenie_Kategoria.Where(x => x.OgloszenieId == idOgloszenia);
       foreach (var el in list)
       {
         _db.Ogloszenie_Kategoria.Remove(el);
-      } 
-      
-      
       }
+    }
+
+    public void SaveChanges()
+    {
+        _db.SaveChanges();
+    }
+
 
   }
 }

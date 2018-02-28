@@ -116,6 +116,7 @@ namespace OGL.Controllers
       {
         return HttpNotFound();
       }
+
       return View(ogloszenie);
     }
 
@@ -125,6 +126,14 @@ namespace OGL.Controllers
     public ActionResult DeleteConfirmed(int id)
     {
       _repo.UsunOgloszenie(id);
+      try
+      {
+        _repo.SaveChanges();
+      }
+      catch (Exception ex)
+      {
+        throw;
+      }
       return RedirectToAction("Index");
     }
 
