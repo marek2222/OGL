@@ -31,6 +31,11 @@ namespace OGL.Controllers
       return View(ogloszenia.ToList());
     }
 
+    public ActionResult Partial(int? page)
+    {
+      var ogloszenia = _repo.PobierzOgloszenia();
+      return PartialView("Index",ogloszenia);
+    }
 
     // GET: /Ogloszenie/Details/5
     public ActionResult Details(int? id)
