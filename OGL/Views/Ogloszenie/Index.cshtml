@@ -17,7 +17,49 @@
     @Html.ActionLink("Dodaj nowe ogłoszenie", "Create", null, new {@class = "btn btn-primary"})
   }
 </p>
+
+@*@using(Html.BeginForm("Index", "Ogloszenie", FormMethod.Get)) {  
+    <b> Opcje: </b>
+    @Html.RadioButton("option", "Tresc")      <text>Tresc       </text> 
+    @Html.RadioButton("option", "Tytul")      <text>Tytul       </text>  
+    @Html.RadioButton("option", "DataDodania")<text>DataDodania </text> 
+    @Html.TextBox("search") 
+    <input type = "submit"  name = "submit"  value = "Search" / >  
+}*@
+
 <table class="table">
+  @using (Html.BeginForm("Index", "Ogloszenie", FormMethod.Post))
+  {
+    <tr>
+        <th>
+        </th>
+        <th>                                                  
+          @Html.TextBox("szukajTresc")
+        </th>
+        <th>
+          @Html.TextBox("szukajTytul")
+        </th>
+        <th>
+        </th>
+        <th>
+          <input type="submit" value="Szukaj"/>
+        </th>
+    </tr>
+  }
+    <tr>
+        <th>
+        </th>
+        <th>                                                  
+            @Html.ActionLink("Tresc", "Index", new { sortOrder = ViewBag.TrescSort })
+        </th>
+        <th>
+            @Html.ActionLink("Tytul", "Index", new { sortOrder = ViewBag.TytulSort })
+        </th>
+        <th>
+            @Html.ActionLink("DataDodania", "Index", new { sortOrder = ViewBag.DataDodania })
+        </th>
+        <th></th>
+    </tr>
     <tr>
         <th>
             @*@Html.DisplayNameFor(model => model[0].UzytkownikId)*@

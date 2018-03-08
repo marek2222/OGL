@@ -26,7 +26,7 @@ namespace OGL.Controllers
 
 
     // GET: /Ogloszenie/
-    public ActionResult Index(int? page, string sortOrder)
+    public ActionResult Index(int? page, string sortOrder, string szukajTresc, string szukajTytul)
     {
       int currentPage = page ?? 1;
       int naStronie = 3;
@@ -38,6 +38,10 @@ namespace OGL.Controllers
       ViewBag.TytulSort = sortOrder == "TytulAsc" ? "Tytul" : "TytulAsc";
 
       var ogloszenia = _repo.PobierzOgloszenia();
+      // Wyszukiwanie
+      ogloszenia = ogloszenia.Where(x => x.Tresc.Contains(szukajTresc) || szukajTresc == null);
+      ogloszenia = ogloszenia.Where(x => x.Tytul.Contains(szukajTytul) || szukajTytul == null);
+
       switch (sortOrder)
       {
         case "DataDodania":
