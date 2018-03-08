@@ -45,6 +45,9 @@
   </dl>
 </div>
 <p>
-  @Html.ActionLink("Edytuj", "Edit", new { id = Model.Id }, new { @class = "btn btn-primary" })
+  @if (User.Identity.IsAuthenticated || (User.IsInRole("Admin") || User.IsInRole("Pracownik")))
+  {
+    @Html.ActionLink("Edytuj", "Edit", new { id = Model.Id }, new { @class = "btn btn-primary" }) <br />
+  }
   @Html.ActionLink("Wróć", "Index", null, new { @class = "btn btn-warning" })
 </p>
