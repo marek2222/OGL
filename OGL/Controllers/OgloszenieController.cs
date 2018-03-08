@@ -11,7 +11,7 @@ using System.Diagnostics;
 using Repozytorium.Repo;
 using Repozytorium.IRepo;
 using Microsoft.AspNet.Identity;
-
+using PagedList;
 
 namespace OGL.Controllers
 {
@@ -24,17 +24,28 @@ namespace OGL.Controllers
       _repo = repo;
     }
 
+
     // GET: /Ogloszenie/
-    public ActionResult Index()
+    public ActionResult Index(int? page)
     {
+      int currentPage = page ?? 1; 
+      int naStronie = 3; 
+
       var ogloszenia = _repo.PobierzOgloszenia();
-      return View(ogloszenia.ToList());
+      //var ogloszenia = _repo.PobierzStrone(currentPage, naStronie);
+      ogloszenia = ogloszenia.OrderByDescending(d => d.DataDodania);
+      return View(ogloszenia.ToPagedList<Ogloszenie>(currentPage, naStronie));
     }
+
 
     public ActionResult Partial(int? page)
     {
+      int currentPage = page ?? 1;
+      int naStronie = 3;
+      
       var ogloszenia = _repo.PobierzOgloszenia();
-      return PartialView("Index",ogloszenia);
+      ogloszenia = ogloszenia.OrderByDescending(d => d.DataDodania);
+      return PartialView("Index", ogloszenia.ToPagedList<Ogloszenie>(currentPage, naStronie));
     }
 
 

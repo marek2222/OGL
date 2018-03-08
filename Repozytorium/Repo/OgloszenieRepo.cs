@@ -21,6 +21,17 @@ namespace Repozytorium.Repo
       return ogloszenia;
     }
 
+    public IQueryable<Ogloszenie> PobierzStrone(int? page = 1, int? pageSize = 10)
+    {
+      var ogloszenia = _db.Ogloszenia
+        .OrderByDescending(o => o.DataDodania)
+        .Skip((page.Value - 1) * pageSize.Value)
+        .Take(pageSize.Value);
+
+      return ogloszenia;
+    }
+
+
     public Ogloszenie GetOgloszenieById(int id)
     {
       Ogloszenie ogloszenie = _db.Ogloszenia.Find(id);
@@ -29,7 +40,7 @@ namespace Repozytorium.Repo
 
     public void Dodaj(Ogloszenie ogloszenie)
     {
-        _db.Ogloszenia.Add(ogloszenie);
+      _db.Ogloszenia.Add(ogloszenie);
     }
 
     public void Aktualizuj(Ogloszenie ogloszenie)
@@ -53,9 +64,10 @@ namespace Repozytorium.Repo
       }
     }
 
+
     public void SaveChanges()
     {
-        _db.SaveChanges();
+      _db.SaveChanges();
     }
 
   }

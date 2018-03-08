@@ -46,8 +46,8 @@
   </dl>
 </div>
 <p>
-  @if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("Pracownik" 
-       || Model.UzytkownikId == User.Identity.GetUserId())))
+  @if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("Pracownik") 
+       || Model.UzytkownikId == User.Identity.GetUserId()))
   {
     @Html.ActionLink("Edytuj", "Edit", new { id = Model.Id }, new { @class = "btn btn-primary" }) <br />
   }

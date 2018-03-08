@@ -1,4 +1,7 @@
-﻿@model IEnumerable<Repozytorium.Models.Ogloszenie>
+﻿@using PagedList.Mvc;
+@model PagedList.IPagedList<Repozytorium.Models.Ogloszenie>
+<link href="~/Content/PagedList.css" rel="stylesheet" />
+@*@model IEnumerable<Repozytorium.Models.Ogloszenie>*@
 
 @{
   ViewBag.Tytul         = "Lista ogłoszeń - metatytuł do 60 znaków"; 
@@ -17,16 +20,16 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.UzytkownikId)
+            @Html.DisplayNameFor(model => model[0].UzytkownikId)
         </th>
         <th>                                                  
-            @Html.DisplayNameFor(model => model.Tresc)
+            @Html.DisplayNameFor(model => model[0].Tresc)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Tytul)
+            @Html.DisplayNameFor(model => model[0].Tytul)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.DataDodania)
+            @Html.DisplayNameFor(model => model[0].DataDodania)
         </th>
         <th></th>
     </tr>
@@ -61,3 +64,8 @@
 }
 
 </table>
+<div>
+  <br />
+  Strona @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) z @Model.PageCount
+  @Html.PagedListPager( Model, page => Url.Action("Index", new { page }) )
+</div>
