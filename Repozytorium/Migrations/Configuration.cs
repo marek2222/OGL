@@ -56,7 +56,7 @@ namespace Repozytorium.Migrations
       if (!context.Users.Any(u => u.UserName == "Admin"))
       {
 
-        var user = new Uzytkownik { UserName = "Admin", Wiek = 12 }; 
+        var user = new Uzytkownik { UserName = "admin@o2.pl", Wiek = 22 }; 
 
         var adminresult = manager.Create(user, "12345678");
 
@@ -66,14 +66,14 @@ namespace Repozytorium.Migrations
 
       if (!context.Users.Any(u => u.UserName == "Marek"))
       {
-        var user = new Uzytkownik { UserName = "marek@AspNetMvc.pl" };
+        var user = new Uzytkownik { UserName = "marek@o2.pl" };
         var adminresult = manager.Create(user, "1234Abc,");
         if (adminresult.Succeeded)
           manager.AddToRole(user.Id, "Pracownik");
       }
       if (!context.Users.Any(u => u.UserName == "Prezes"))
       {
-        var user = new Uzytkownik { UserName = "prezes@AspNetMvc.pl" };
+        var user = new Uzytkownik { UserName = "prezes@o2.pl" };
         var adminresult = manager.Create(user, "1234Abc,");
         if (adminresult.Succeeded)
           manager.AddToRole(user.Id, "Admin");
