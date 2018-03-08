@@ -37,6 +37,7 @@ namespace OGL.Controllers
       return PartialView("Index",ogloszenia);
     }
 
+
     // GET: /Ogloszenie/Details/5
     public ActionResult Details(int? id)
     {
@@ -51,6 +52,7 @@ namespace OGL.Controllers
       }
       return View(ogloszenie);
     }
+
 
     // GET: /Ogloszenie/Create
     [Authorize]
@@ -86,7 +88,8 @@ namespace OGL.Controllers
       return View(ogloszenie);
     }
 
-    // GET: /Ogloszenie/Edit/5
+    // GET: /Ogloszenie/Edit/5  z autoryzacją
+    [Authorize]
     public ActionResult Edit(int? id)
     {
       if (id == null)
@@ -98,6 +101,11 @@ namespace OGL.Controllers
       {
         return HttpNotFound();
       }
+      else if (ogloszenie.UzytkownikId != User.Identity.GetUserId()
+          && !(User.IsInRole("Admin") || User.IsInRole("Pracownik")))
+      {
+        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+      }
       //ViewBag.UzytkownikId = new SelectList(db.Users, "Id", "Email", ogloszenie.UzytkownikId);
       return View(ogloszenie);
     }
@@ -105,6 +113,7 @@ namespace OGL.Controllers
     // POST: /Ogloszenie/Edit/5
     // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
     // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+    [Authorize]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public ActionResult Edit([Bind(Include = "Id,Tresc,Tytul,DataDodania,UzytkownikId")] Ogloszenie ogloszenie)
@@ -128,6 +137,7 @@ namespace OGL.Controllers
     }
 
     // GET: /Ogloszenie/Delete/5
+    [Authorize]
     public ActionResult Delete(int? id, bool? blad)
     {
       if (id == null)
@@ -139,6 +149,13 @@ namespace OGL.Controllers
       {
         return HttpNotFound();
       }
+      // sprawdzenie, czy aktualnie zalogowany użytkownik jest właścicielem lub adminem. 
+      // Jeśli tak, to może przejść do widoku usuwania. 
+      // Jeśli nie, zostanie zwrócony komunikat 400 — Bad Request
+      else if (ogloszenie.UzytkownikId != User.Identity.GetUserId() && User.IsInRole("Admin"))
+      {
+        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+      }
       if (blad != null) 
         ViewBag.Blad = true;
 
@@ -146,6 +163,7 @@ namespace OGL.Controllers
     }
 
     // POST: /Ogloszenie/Delete/5
+    [Authorize]
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public ActionResult DeleteConfirmed(int id)
