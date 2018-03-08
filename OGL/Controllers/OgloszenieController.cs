@@ -26,14 +26,46 @@ namespace OGL.Controllers
 
 
     // GET: /Ogloszenie/
-    public ActionResult Index(int? page)
+    public ActionResult Index(int? page, string sortOrder)
     {
-      int currentPage = page ?? 1; 
-      int naStronie = 3; 
+      int currentPage = page ?? 1;
+      int naStronie = 3;
+
+      ViewBag.CurrentSort = sortOrder;
+      ViewBag.IdSort = String.IsNullOrEmpty(sortOrder) ? "IdAsc" : "";
+      ViewBag.DataDodaniaSort = sortOrder == "DataDodania" ? "DataDodaniaAsc" : "DataDodania";
+      ViewBag.TrescSort = sortOrder == "TrescAsc" ? "Tresc" : "TrescAsc";
+      ViewBag.TytulSort = sortOrder == "TytulAsc" ? "Tytul" : "TytulAsc";
 
       var ogloszenia = _repo.PobierzOgloszenia();
-      //var ogloszenia = _repo.PobierzStrone(currentPage, naStronie);
-      ogloszenia = ogloszenia.OrderByDescending(d => d.DataDodania);
+      switch (sortOrder)
+      {
+        case "DataDodania":
+          ogloszenia = ogloszenia.OrderByDescending(s => s.DataDodania);
+          break;
+        case "DataDodaniaAsc":
+          ogloszenia = ogloszenia.OrderBy(s => s.DataDodania);
+          break;
+        case "Tytul":
+          ogloszenia = ogloszenia.OrderByDescending(s => s.Tytul);
+          break;
+        case "TytulAsc":
+          ogloszenia = ogloszenia.OrderBy(s => s.Tytul);
+          break;
+        case "Tresc":
+          ogloszenia = ogloszenia.OrderByDescending(s => s.Tresc);
+          break;
+        case "TrescAsc":
+          ogloszenia = ogloszenia.OrderBy(s => s.Tresc);
+          break;
+        case "IdAsc":
+          ogloszenia = ogloszenia.OrderBy(s => s.Id);
+          break;
+        default:    // id descending
+          ogloszenia = ogloszenia.OrderByDescending(s => s.Id);
+          break;
+      }
+
       return View(ogloszenia.ToPagedList<Ogloszenie>(currentPage, naStronie));
     }
 
@@ -42,7 +74,7 @@ namespace OGL.Controllers
     {
       int currentPage = page ?? 1;
       int naStronie = 3;
-      
+
       var ogloszenia = _repo.PobierzOgloszenia();
       ogloszenia = ogloszenia.OrderByDescending(d => d.DataDodania);
       return PartialView("Index", ogloszenia.ToPagedList<Ogloszenie>(currentPage, naStronie));
@@ -84,7 +116,7 @@ namespace OGL.Controllers
       if (ModelState.IsValid)
       {
         ogloszenie.UzytkownikId = User.Identity.GetUserId();
-        ogloszenie.DataDodania  = DateTime.Now;
+        ogloszenie.DataDodania = DateTime.Now;
         try
         {
           _repo.Dodaj(ogloszenie);
@@ -167,7 +199,7 @@ namespace OGL.Controllers
       {
         return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
       }
-      if (blad != null) 
+      if (blad != null)
         ViewBag.Blad = true;
 
       return View(ogloszenie);
@@ -186,7 +218,7 @@ namespace OGL.Controllers
       }
       catch (Exception ex)
       {
-        return RedirectToAction("Delete", new {id = id, blad = true});
+        return RedirectToAction("Delete", new { id = id, blad = true });
       }
       return RedirectToAction("Index");
     }

@@ -20,16 +20,17 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model[0].UzytkownikId)
+            @*@Html.DisplayNameFor(model => model[0].UzytkownikId)*@
+            @Html.ActionLink("Id użytkownika", "Index", new { sortOrder = ViewBag.IdSort })
         </th>
         <th>                                                  
-            @Html.DisplayNameFor(model => model[0].Tresc)
+            @Html.ActionLink("Tresc", "Index", new { sortOrder = ViewBag.TrescSort })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model[0].Tytul)
+            @Html.ActionLink("Tytul", "Index", new { sortOrder = ViewBag.TytulSort })
         </th>
         <th>
-            @Html.DisplayNameFor(model => model[0].DataDodania)
+            @Html.ActionLink("DataDodania", "Index", new { sortOrder = ViewBag.DataDodania })
         </th>
         <th></th>
     </tr>
@@ -67,5 +68,5 @@
 <div>
   <br />
   Strona @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) z @Model.PageCount
-  @Html.PagedListPager( Model, page => Url.Action("Index", new { page }) )
+  @Html.PagedListPager( Model, page => Url.Action("Index", new { page, sortOrder = ViewBag.CurrentSort }) )
 </div>
