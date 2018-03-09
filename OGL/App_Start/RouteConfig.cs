@@ -13,6 +13,8 @@ namespace OGL
     {
       routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+      // dodane aby uprościć ścieżkę do danych kategorii zwracanych w postaci JSON
+      routes.MapMvcAttributeRoutes();
       routes.MapRoute(
           name: "Default",
           url: "{controller}/{action}/{id}",
