@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Repozytorium.Models.Ogloszenie>
+
+@{
+  ViewBag.Tytul = "Ogłoszenia z kategorii: "; // + Model.NazwaKategorii;
+}
+
+<h2>Ogłoszenia z kategorii</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.UzytkownikId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Tresc)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Tytul)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DataDodania)
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.UzytkownikId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Tresc)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Tytul)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DataDodania)
+        </td>
+    </tr>
+}
+
+</table>

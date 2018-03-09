@@ -345,6 +345,7 @@
     <Content Include="Views\Ogloszenie\Index.cshtml" />
     <Content Include="Views\Ogloszenie\MojeOgloszenia.cshtml" />
     <Content Include="Views\Kategoria\Index.cshtml" />
+    <Content Include="Views\Kategoria\PokazOgloszenia.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

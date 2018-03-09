@@ -22,5 +22,16 @@ namespace Repozytorium.Repo
       var kategorie = _db.Kategorie.AsNoTracking();
       return kategorie;
     }
+
+    public IQueryable<Ogloszenie> PobierzOgloszeniaZKategorii(int id)
+    {
+      _db.Database.Log = message => Trace.WriteLine(message);
+      var ogloszania = from o in _db.Ogloszenia 
+                       join k in _db.Ogloszenie_Kategoria on o.Id equals k.Id 
+                       where k.KategoriaId == id 
+                       select o;
+      return ogloszania;
+    }
+
   }
 }
