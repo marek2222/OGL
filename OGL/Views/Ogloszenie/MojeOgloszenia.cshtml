@@ -4,12 +4,12 @@
 @*@model IEnumerable<Repozytorium.Models.Ogloszenie>*@
 
 @{
-  ViewBag.Tytul         = "Lista ogłoszeń - metatytuł do 60 znaków"; 
-  ViewBag.Opis          = "Lista ogłoszeń z naszej aplikacji — metaopis do 160 znaków"; 
+  ViewBag.Tytul         = "Moje ogłoszenia - metatytuł do 60 znaków"; 
+  ViewBag.Opis          = "Lista ogłoszeń dodanych przez zalogowanego użytkownika — metaopis do 160 znaków"; 
   ViewBag.SlowaKluczowe = "Lista, ogłoszeń, słowa, kluczowe, aplikacja"; 
 }
 
-<h2>Lista ogłoszeń</h2>
+<h2>Lista Moich ogłoszeń</h2>
 
 <p>
   @if (User.Identity.IsAuthenticated)
@@ -28,36 +28,18 @@
 }*@
 
 <table class="table">
-  @using (Html.BeginForm("Index", "Ogloszenie", FormMethod.Post))  {
     <tr>
         <th>
+            @Html.DisplayNameFor(model => model[0].UzytkownikId)
         </th>
         <th>                                                  
-          @Html.TextBox("szukajTresc")
+            @Html.DisplayNameFor(model => model[0].Tresc)
         </th>
         <th>
-          @Html.TextBox("szukajTytul")
+            @Html.DisplayNameFor(model => model[0].Tytul)
         </th>
         <th>
-        </th>
-        <th>
-          <input type="submit" value="Szukaj"/>
-        </th>
-    </tr>
-  }
-    <tr>
-        <th>
-            @*@Html.DisplayNameFor(model => model[0].UzytkownikId)*@
-            @Html.ActionLink("Id użytkownika", "Index", new { sortOrder = ViewBag.IdSort })
-        </th>
-        <th>                                                  
-            @Html.ActionLink("Tresc", "Index", new { sortOrder = ViewBag.TrescSort })
-        </th>
-        <th>
-            @Html.ActionLink("Tytul", "Index", new { sortOrder = ViewBag.TytulSort })
-        </th>
-        <th>
-            @Html.ActionLink("DataDodania", "Index", new { sortOrder = ViewBag.DataDodania })
+            @Html.DisplayNameFor(model => model[0].DataDodania)
         </th>
         <th></th>
     </tr>
@@ -95,6 +77,5 @@
 <div>
   <br />
   Strona @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) z @Model.PageCount
-  @Html.PagedListPager( Model, page => Url.Action("Index", new { page, sortOrder = ViewBag.CurrentSort }) )
-@*  @Html.PagedListPager( Model, page => Url.Action("Index", new { page, sortOrder = ViewBag.CurrentSort }) )*@
+  @Html.PagedListPager( Model, page => Url.Action("MojeOgloszenia", new { page }) )
 </div>

@@ -74,6 +74,19 @@ namespace OGL.Controllers
     }
 
 
+    [OutputCache(Duration = 1000)]
+    public ActionResult MojeOgloszenia(int? page)
+    {
+      int currentPage = page ?? 1;
+      int naStronie = 3;
+      string userId = User.Identity.GetUserId();
+
+      var ogloszenia = _repo.PobierzOgloszenia();
+      ogloszenia = ogloszenia.OrderByDescending(d => d.DataDodania).Where(o=>o.UzytkownikId == userId);
+
+      return View(ogloszenia.ToPagedList<Ogloszenie>(currentPage, naStronie));
+    }
+
     public ActionResult Partial(int? page)
     {
       int currentPage = page ?? 1;
@@ -125,7 +138,8 @@ namespace OGL.Controllers
         {
           _repo.Dodaj(ogloszenie);
           _repo.SaveChanges();
-          return RedirectToAction("Index");
+          //return RedirectToAction("Index");   - poprzednio
+          return RedirectToAction("MojeOgloszenia");
         }
         catch (Exception ex)
         {
