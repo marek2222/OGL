@@ -33,5 +33,11 @@ namespace Repozytorium.Repo
       return ogloszania;
     }
 
+    public string NazwaDlaKategorii(int id)
+    {
+      var nazwa = _db.Kategorie.Find(id).Nazwa;
+      return nazwa;
+    }
+
   }
 }

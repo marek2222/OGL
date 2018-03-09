@@ -11,5 +11,6 @@ namespace Repozytorium.IRepo
   {
     IQueryable<Kategoria> PobierzKategorie();
     IQueryable<Ogloszenie> PobierzOgloszeniaZKategorii(int id);
+    string NazwaDlaKategorii(int id);
   }
 }

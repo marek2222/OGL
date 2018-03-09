@@ -1,10 +1,11 @@
-﻿@model IEnumerable<Repozytorium.Models.Ogloszenie>
+﻿@*@model IEnumerable<Repozytorium.Models.Ogloszenie>*@
+@model Repozytorium.Models.Views.OgloszeniaZKategoriiViewModels
 
 @{
-  ViewBag.Tytul = "Ogłoszenia z kategorii: "; // + Model.NazwaKategorii;
+  ViewBag.Tytul = "Ogłoszenia z kategorii: " + Model.NazwaKategorii;
 }
 
-<h2>Ogłoszenia z kategorii</h2>
+<h2>Ogłoszenia z kategorii: @Model.NazwaKategorii</h2>
 
 <p>
     @Html.ActionLink("Create New", "Create")
@@ -12,20 +13,20 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.UzytkownikId)
+            @Html.DisplayNameFor(model => model.Ogloszenia.First().UzytkownikId)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Tresc)
+            @Html.DisplayNameFor(model => model.Ogloszenia.First().Tresc)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Tytul)
+            @Html.DisplayNameFor(model => model.Ogloszenia.First().Tytul)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.DataDodania)
+            @Html.DisplayNameFor(model => model.Ogloszenia.First().DataDodania)
         </th>
     </tr>
 
-@foreach (var item in Model) {
+@foreach (var item in Model.Ogloszenia) {
     <tr>
         <td>
             @Html.DisplayFor(modelItem => item.UzytkownikId)

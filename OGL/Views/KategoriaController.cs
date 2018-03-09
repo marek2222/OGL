@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using Repozytorium.Models;
 using Repozytorium.IRepo;
 using Repozytorium.Repo;
+using Repozytorium.Models.Views;
 
 namespace OGL.Views
 {
@@ -31,8 +32,12 @@ namespace OGL.Views
 
     public ActionResult PokazOgloszenia(int id)
     {
-      var ogloszenia = _repo.PobierzOgloszeniaZKategorii(id);
-      return View(ogloszenia);
+      var ogloszenia        = _repo.PobierzOgloszeniaZKategorii(id);
+      OgloszeniaZKategoriiViewModels model = new OgloszeniaZKategoriiViewModels();
+      model.Ogloszenia      = ogloszenia.ToList();
+      model.NazwaKategorii  = _repo.NazwaDlaKategorii(id);
+      return View(model);
     }
+
   }
 }
