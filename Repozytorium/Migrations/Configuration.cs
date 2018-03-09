@@ -53,7 +53,7 @@ namespace Repozytorium.Migrations
     {
       var store = new UserStore<Uzytkownik>(context);
       var manager = new UserManager<Uzytkownik>(store);
-      if (!context.Users.Any(u => u.UserName == "Admin"))
+      if (!context.Users.Any(u => u.UserName == "admin@o2.pl"))
       {
 
         var user = new Uzytkownik { UserName = "admin@o2.pl", Wiek = 22 }; 
@@ -64,14 +64,14 @@ namespace Repozytorium.Migrations
           manager.AddToRole(user.Id, "Admin");
       }
 
-      if (!context.Users.Any(u => u.UserName == "Marek"))
+      if (!context.Users.Any(u => u.UserName == "marek@o2.pl"))
       {
         var user = new Uzytkownik { UserName = "marek@o2.pl" };
         var adminresult = manager.Create(user, "1234Abc,");
         if (adminresult.Succeeded)
           manager.AddToRole(user.Id, "Pracownik");
       }
-      if (!context.Users.Any(u => u.UserName == "Prezes"))
+      if (!context.Users.Any(u => u.UserName == "prezes@o2.pl"))
       {
         var user = new Uzytkownik { UserName = "prezes@o2.pl" };
         var adminresult = manager.Create(user, "1234Abc,");
@@ -84,7 +84,7 @@ namespace Repozytorium.Migrations
     private void SeedOgloszenia(OglContext context)
     {
 
-      var idUzytkownika = context.Set<Uzytkownik>().Where(u => u.UserName == "Admin").FirstOrDefault().Id;
+      var idUzytkownika = context.Set<Uzytkownik>().Where(u => u.UserName == "admin@o2.pl").FirstOrDefault().Id;
       for (int i = 1; i <= 10; i++)
       {
         var ogl = new Ogloszenie()
