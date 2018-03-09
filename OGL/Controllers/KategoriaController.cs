@@ -39,5 +39,12 @@ namespace OGL.Controllers
       return View(model);
     }
 
+    [Route("JSON")]
+    public ActionResult KategorieWJson()
+    {
+      var kategorie = _repo.PobierzKategorie().AsNoTracking();
+      return Json(kategorie, JsonRequestBehavior.AllowGet);
+    }
+
   }
 }
