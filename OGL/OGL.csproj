@@ -270,7 +270,7 @@
     <Compile Include="Models\Views\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
-    <Compile Include="Views\KategoriaController.cs" />
+    <Compile Include="Controllers\KategoriaController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />

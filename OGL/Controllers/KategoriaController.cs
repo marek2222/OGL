@@ -11,7 +11,7 @@ using Repozytorium.IRepo;
 using Repozytorium.Repo;
 using Repozytorium.Models.Views;
 
-namespace OGL.Views
+namespace OGL.Controllers
 {
   public class KategoriaController : Controller
   {
