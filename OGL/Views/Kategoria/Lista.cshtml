@@ -1,0 +1,47 @@
+﻿@{     
+  ViewBag.Tytul = "Lista kategorii z API"; 
+}
+
+<h1>Lista kategorii pobranych z API</h1>
+<div id="button-blue" class="btn btn-primary">Pobierz kategorie z API bez odświeżania strony</div>
+<div class="kategorie_lista"></div>
+
+@section scripts{
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $('#button-blue').click(function () {
+        var url = "http://localhost:12345/JSON/";
+        $.ajax({
+          url: url,
+          type: 'GET',
+          dataType: 'json',
+          success: function (data) {
+            ShowResponse(data);
+          },
+          error: function (request, status, error) {
+            //alert(request.responseText);
+            alert(request + '\n' + status + '\n' + error);
+          }
+        });
+      });
+    });
+ 
+    function ShowResponse(kategorie) {  
+      var strResult = '<h2>Lista kategorii wyświetlona przy pomocy jQuery:</h2><table class="table"><tr><th>Nazwa kategorii:</th><th>Id rodzica:</th><th>Tytuł w Google:</th></tr>';  
+      $.each(kategorie, function (index, kategoria) {   
+        strResult += '<tr>'
+        + '<td><a href="/Kategoria/PokazOgloszenia/'
+        + kategoria.Id + '">'
+        + kategoria.Nazwa + '</a></td>'
+        + '<td>' + kategoria.ParentId + '</td>'    
+        + '<td>' + kategoria.MetaTytul + '</td>';  
+      });  
+      strResult += '</tr></table><hr />';  
+      
+      //wyswietlamy sformatowane dane w HTML  
+      $(".kategorie_lista").html(strResult); 
+ 
+      //wyswietlamy kod JSON zwrócony w API  
+      $('.kategorie_lista').append("<h2>Dane pobrane z API:</h2>" + JSON.stringify(kategorie));
+    } </script>
+}
