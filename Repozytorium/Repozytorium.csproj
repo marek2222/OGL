@@ -125,6 +125,7 @@
     <Compile Include="IRepo\IKategoriaRepo.cs" />
     <Compile Include="IRepo\IOglContext .cs" />
     <Compile Include="IRepo\IOgloszenieRepo.cs" />
+    <Compile Include="IRepo\IZdjecieRepo.cs" />
     <Compile Include="Migrations\201802221454554_startowa.cs" />
     <Compile Include="Migrations\201802221454554_startowa.Designer.cs">
       <DependentUpon>201802221454554_startowa.cs</DependentUpon>
@@ -141,9 +142,11 @@
     <Compile Include="Models\Ogloszenie_Kategoria.cs" />
     <Compile Include="Models\Uzytkownik.cs" />
     <Compile Include="Models\Views\OgloszeniaZKategoriiViewModels.cs" />
+    <Compile Include="Models\Zdjecie.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repo\KategoriaRepo.cs" />
     <Compile Include="Repo\OgloszenieRepo.cs" />
+    <Compile Include="Repo\ZdjecieRepo.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201802221454554_startowa.resx">

@@ -14,12 +14,12 @@ namespace Repozytorium.Models
     public Uzytkownik()
     {
       this.Ogloszenia = new HashSet<Ogloszenie>();
+      this.Zdjecia    = new HashSet<Zdjecie>();
     }
+
     public string Imie { get; set; }
-
     public string Nazwisko { get; set; }
-
-    public int? Wiek { get; set; }
+    public int?   Wiek { get; set; }
 
     #region dodatkowe pole notmapped
     [NotMapped]
@@ -27,7 +27,9 @@ namespace Repozytorium.Models
     public string PelneNazwisko { get { return Imie + " " + Nazwisko; } }
     #endregion
 
-    public virtual ICollection<Ogloszenie> Ogloszenia { get; private set; }
+    public virtual ICollection<Ogloszenie>  Ogloszenia { get; private set; }
+    public virtual ICollection<Zdjecie>     Zdjecia { get; private set; }
+
 
     public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<Uzytkownik> manager)
     {
