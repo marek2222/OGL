@@ -134,6 +134,10 @@
     <Compile Include="Migrations\201802221748394_1.Designer.cs">
       <DependentUpon>201802221748394_1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201803131520097_Zdjecie.cs" />
+    <Compile Include="Migrations\201803131520097_Zdjecie.Designer.cs">
+      <DependentUpon>201803131520097_Zdjecie.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Views\AccountViewModels.cs" />
     <Compile Include="Models\Kategoria.cs" />
@@ -154,6 +158,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201802221748394_1.resx">
       <DependentUpon>201802221748394_1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803131520097_Zdjecie.resx">
+      <DependentUpon>201803131520097_Zdjecie.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
