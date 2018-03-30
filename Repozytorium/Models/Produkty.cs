@@ -27,5 +27,6 @@ namespace Repozytorium.Models
     [DataType(DataType.Upload)]
     [Display(Name = "Wybierz plik")]
     public HttpPostedFileBase ImageUpload { get; set; }
+
   }
 }

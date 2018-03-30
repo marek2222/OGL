@@ -139,6 +139,7 @@
       <DependentUpon>201803131520097_Zdjecie.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\Produkty.cs" />
     <Compile Include="Models\Views\AccountViewModels.cs" />
     <Compile Include="Models\Kategoria.cs" />
     <Compile Include="Models\OglContext.cs" />
@@ -146,7 +147,6 @@
     <Compile Include="Models\Ogloszenie_Kategoria.cs" />
     <Compile Include="Models\Uzytkownik.cs" />
     <Compile Include="Models\Views\OgloszeniaZKategoriiViewModels.cs" />
-    <Compile Include="Models\Produkty.cs" />
     <Compile Include="Models\Zdjecie.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repo\KategoriaRepo.cs" />
