@@ -10,7 +10,7 @@ namespace Repozytorium.IRepo
 
     DbSet<Kategoria> Kategorie { get; set; }
     DbSet<Ogloszenie> Ogloszenia { get; set; }
-    DbSet<Uzytkownik> Uzytkownik { get; set; }
+    DbSet<Uzytkownik> Uzytkownicy { get; set; }
     DbSet<Ogloszenie_Kategoria> Ogloszenie_Kategoria { get; set; }
     DbSet<Zdjecie> Zdjecia { get; set; }
 

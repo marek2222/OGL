@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Web;
 
 namespace Repozytorium.Models
 {
-  public class Zdjecie
+  public class ZdjeciePlik
   {
     [Key]
     public int Id { get; set; }
@@ -18,8 +16,13 @@ namespace Repozytorium.Models
     //---  zdjecia/small/56.jpg
     //---  zdjecia/large/56.jpg
     public string ImageName { get; set; }
-    public string SizeName { get; set; }
-    public byte[] ImgBytes { get; set; }
+    public string SizeName  { get; set; }
+
+    [NotMapped]
+    [Required]
+    [DataType(DataType.Upload)]
+    [Display(Name = "Wybierz plik")]
+    public HttpPostedFileBase ImgBytes  { get; set; }
 
   }
 }

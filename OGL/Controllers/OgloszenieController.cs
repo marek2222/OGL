@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNet.Identity;
+using PagedList;
+using Repozytorium.IRepo;
+using Repozytorium.Models;
+using System;
 using System.Data;
-using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
-using Repozytorium.Models;
-using System.Diagnostics;
-using Repozytorium.Repo;
-using Repozytorium.IRepo;
-using Microsoft.AspNet.Identity;
-using PagedList;
 
 namespace OGL.Controllers
 {

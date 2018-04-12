@@ -1,17 +1,17 @@
-﻿using System;
+﻿using ImageResizer;
+using Repozytorium.Models;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
-using ImageResizer;
 
 //using Microsoft.WindowsAzure;
 //using Microsoft.WindowsAzure.Storage;
 //using Microsoft.WindowsAzure.Storage.Blob;
 
-namespace Services
+namespace Repozytorium
 {
   public struct ImageDimensions
   {
@@ -51,78 +51,78 @@ namespace Services
   public class ImageUpload
   {
 
-    //public string UploadImageAndReturnImageName(HttpPostedFileBase fileBase)
-    //{
-    //  byte[] image = fileBase.InputStream.ReadFully();
-    //  if (!ImageOptimization.ValidateImage(image))
-    //    return null;
+    public string UploadImageAndReturnImageName(HttpPostedFileBase fileBase)
+    {
+      byte[] image = fileBase.InputStream.ReadFully();
+      if (!ImageOptimization.ValidateImage(image))
+        return null;
 
-    //  List<Zdjecie> imagesToUpload = GenerateImageMiniatures(image);
-    //  try
-    //  {
-    //    UploadMultipleImagesToBlob(imagesToUpload);
-    //  }
-    //  catch
-    //  {
-    //    return null;
-    //  }
-    //  //the same image name for all 
-    //  return imagesToUpload.First().ImageName;
-    //}
+      List<Zdjecie> imagesToUpload = GenerateImageMiniatures(image);
+      try
+      {
+        UploadMultipleImagesToBlob(imagesToUpload);
+      }
+      catch
+      {
+        return null;
+      }
+      //the same image name for all 
+      return imagesToUpload.First().ImageName;
+    }
 
-    //List<Zdjecie> GenerateImageMiniatures(byte[] image)
-    //{
-    //  List<Zdjecie> imagesToUpload = new List<Zdjecie>();
+    List<Zdjecie> GenerateImageMiniatures(byte[] image)
+    {
+      List<Zdjecie> imagesToUpload = new List<Zdjecie>();
 
-    //  string blobName = CreateBlobName();
+      string blobName = CreateBlobName();
 
-    //  foreach (var img in GalleryImages.GalleryDimensionsList)
-    //  {
-    //    byte[] imgBytes = ImageOptimization.OptimizeImageFromBytes(img.Width, img.Height, image);
-    //    Zdjecie Zdjecie = new Zdjecie()
-    //    {
-    //      ImgBytes = imgBytes,
-    //      SizeName = img.SizeName,
-    //      ImageName = blobName + "."
-    //          + ImageOptimization.GetImageExtension(imgBytes).ToString()
-    //    };
-    //    imagesToUpload.Add(Zdjecie);
-    //  }
-    //  return imagesToUpload;
-    //}
+      foreach (var img in GalleryImages.GalleryDimensionsList)
+      {
+        byte[] imgBytes = ImageOptimization.OptimizeImageFromBytes(img.Width, img.Height, image);
+        Zdjecie Zdjecie = new Zdjecie()
+        {
+          ImgBytes = imgBytes,
+          SizeName = img.SizeName,
+          ImageName = blobName + "."
+              + ImageOptimization.GetImageExtension(imgBytes).ToString()
+        };
+        imagesToUpload.Add(Zdjecie);
+      }
+      return imagesToUpload;
+    }
 
-    //void UploadMultipleImagesToBlob(List<Zdjecie> images)
-    //{
+    void UploadMultipleImagesToBlob(List<Zdjecie> images)
+    {
 
-    //  //foreach (var img in images)
-    //  //{
-    //  //  string blobName = GetFullBlobName(img.SizeName, img.ImageName);
-    //  //  var blob = new Zdjecie();
-    //  //  blob.ImageName = img.ImageName;
-    //  //  blob.SizeName = img.SizeName;
-    //  //  blob.ImgBytes = img.ImgBytes;
-    //  //  //using (var binaryReader = new BinaryReader(model.ImageUpload.InputStream))
-    //  //  //  product.Image = binaryReader.ReadBytes(img.ImgBytes.ContentLength);
+      //foreach (var img in images)
+      //{
+      //  string blobName = GetFullBlobName(img.SizeName, img.ImageName);
+      //  var blob = new Zdjecie();
+      //  blob.ImageName = img.ImageName;
+      //  blob.SizeName = img.SizeName;
+      //  blob.ImgBytes = img.ImgBytes;
+      //  //using (var binaryReader = new BinaryReader(model.ImageUpload.InputStream))
+      //  //  product.Image = binaryReader.ReadBytes(img.ImgBytes.ContentLength);
 
-    //  //  _repo.AddImage(blob);
-    //  //  _repo.SaveChanges();
-    //  //}
-    //}
+      //  _repo.AddImage(blob);
+      //  _repo.SaveChanges();
+      //}
+    }
 
 
-    //public void DeleteImageByNameWithMiniatures(string imageNameWithExtension)
-    //{
-    //  //CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
-    //  //    CloudConfigurationManager.GetSetting("StorageConnectionString"));
+    public void DeleteImageByNameWithMiniatures(string imageNameWithExtension)
+    {
+      //CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
+      //    CloudConfigurationManager.GetSetting("StorageConnectionString"));
 
-    //  //CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+      //CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
 
-    //  //CloudBlobContainer container = blobClient.GetContainerReference("zdjecia");
-    //  //foreach (var img in GalleryImages.GalleryDimensionsList)
-    //  //{
-    //  //  DeleteImageByName(container, GetFullBlobName(img.SizeName, imageNameWithExtension));
-    //  //}
-    //}
+      //CloudBlobContainer container = blobClient.GetContainerReference("zdjecia");
+      //foreach (var img in GalleryImages.GalleryDimensionsList)
+      //{
+      //  DeleteImageByName(container, GetFullBlobName(img.SizeName, imageNameWithExtension));
+      //}
+    }
 
     //void DeleteImageByName(CloudBlobContainer container, string blobName)
     //{

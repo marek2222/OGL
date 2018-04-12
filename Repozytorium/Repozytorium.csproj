@@ -51,6 +51,10 @@
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="ImageResizer, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ImageResizer.4.2.5\lib\net45\ImageResizer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
       <Private>True</Private>
@@ -122,6 +126,7 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ImageService.cs" />
     <Compile Include="IRepo\IKategoriaRepo.cs" />
     <Compile Include="IRepo\IOglContext .cs" />
     <Compile Include="IRepo\IOgloszenieRepo.cs" />
@@ -138,6 +143,14 @@
     <Compile Include="Migrations\201803131520097_Zdjecie.Designer.cs">
       <DependentUpon>201803131520097_Zdjecie.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804101321237_Zdjecie2.cs" />
+    <Compile Include="Migrations\201804101321237_Zdjecie2.Designer.cs">
+      <DependentUpon>201804101321237_Zdjecie2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804121122128_ZdjeciePlik.cs" />
+    <Compile Include="Migrations\201804121122128_ZdjeciePlik.Designer.cs">
+      <DependentUpon>201804121122128_ZdjeciePlik.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Views\AccountViewModels.cs" />
     <Compile Include="Models\Kategoria.cs" />
@@ -146,6 +159,7 @@
     <Compile Include="Models\Ogloszenie_Kategoria.cs" />
     <Compile Include="Models\Uzytkownik.cs" />
     <Compile Include="Models\Views\OgloszeniaZKategoriiViewModels.cs" />
+    <Compile Include="Models\ZdjeciePlik.cs" />
     <Compile Include="Models\Zdjecie.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repo\KategoriaRepo.cs" />
@@ -161,6 +175,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201803131520097_Zdjecie.resx">
       <DependentUpon>201803131520097_Zdjecie.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804101321237_Zdjecie2.resx">
+      <DependentUpon>201804101321237_Zdjecie2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804121122128_ZdjeciePlik.resx">
+      <DependentUpon>201804121122128_ZdjeciePlik.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
