@@ -152,6 +152,7 @@
       <DependentUpon>201804121122128_ZdjeciePlik.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\Produkty.cs" />
     <Compile Include="Models\Views\AccountViewModels.cs" />
     <Compile Include="Models\Kategoria.cs" />
     <Compile Include="Models\OglContext.cs" />
