@@ -151,7 +151,12 @@
     <Compile Include="Migrations\201804121122128_ZdjeciePlik.Designer.cs">
       <DependentUpon>201804121122128_ZdjeciePlik.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804161243446_Edytor.cs" />
+    <Compile Include="Migrations\201804161243446_Edytor.Designer.cs">
+      <DependentUpon>201804161243446_Edytor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\Edytor.cs" />
     <Compile Include="Models\Produkty.cs" />
     <Compile Include="Models\Views\AccountViewModels.cs" />
     <Compile Include="Models\Kategoria.cs" />
@@ -182,6 +187,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804121122128_ZdjeciePlik.resx">
       <DependentUpon>201804121122128_ZdjeciePlik.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804161243446_Edytor.resx">
+      <DependentUpon>201804161243446_Edytor.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

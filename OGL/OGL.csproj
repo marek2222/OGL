@@ -269,6 +269,7 @@
     <Compile Include="App_Start\UnityMvcActivator.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\EdytorController.cs" />
     <Compile Include="Controllers\GaleriaController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -361,6 +362,7 @@
     <Content Include="Views\Galeria\Edit.cshtml" />
     <Content Include="Views\Galeria\Index.cshtml" />
     <Content Include="Views\Galeria\Create.cshtml" />
+    <Content Include="Views\Edytor\EdytujTresc.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

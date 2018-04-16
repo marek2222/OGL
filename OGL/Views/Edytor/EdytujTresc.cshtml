@@ -1,0 +1,33 @@
+﻿@model Repozytorium.Models.Edytor
+@{
+  ViewBag.Tytul = "Edytuj treść HTML";
+}
+
+<h2>Edytuj treść HTML</h2>
+
+<div class="row" style="max-width:800px">
+  <div class="col-xs-12">
+    @using (Html.BeginForm())
+    {
+      @Html.AntiForgeryToken()
+      <input type="hidden" name="Id" value="Model.Id" />
+      <hr />
+      <h2>Kod HTML:</h2>
+      @Html.TextAreaFor(model => model.Tresc, 5, 80, new { style = "max-width:90%;" })
+
+      <div class="form-actions align-right clearfix">
+        <button type="submit" class="btn btn-primary pull-left">
+          <i class="ace-icon fa fa-check bigger-110"></i>      
+          Zapisz
+        </button>
+      </div>
+    }
+    @if (Model != null)
+      {
+      <hr />
+      <h2>Podgląd w HTMLu:</h2>
+      <hr />
+      @Html.Raw(Model.Tresc);
+      }
+  </div>
+</div> 

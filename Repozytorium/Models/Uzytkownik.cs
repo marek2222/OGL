@@ -29,6 +29,7 @@ namespace Repozytorium.Models
 
     public virtual ICollection<Ogloszenie>  Ogloszenia { get; private set; }
     public virtual ICollection<Zdjecie>     Zdjecia { get; private set; }
+    public virtual Edytor Edytor { get; set; }
 
 
     public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<Uzytkownik> manager)
