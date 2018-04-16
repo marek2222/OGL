@@ -9,15 +9,15 @@
   <div class="col-xs-12">
     @using (Html.BeginForm())
     {
-      @Html.AntiForgeryToken()
+    @Html.AntiForgeryToken()
       <input type="hidden" name="Id" value="Model.Id" />
       <hr />
       <h2>Kod HTML:</h2>
-      @Html.TextAreaFor(model => model.Tresc, 5, 80, new { style = "max-width:90%;" })
+      @Html.TextAreaFor(model => model.Tresc)
 
       <div class="form-actions align-right clearfix">
         <button type="submit" class="btn btn-primary pull-left">
-          <i class="ace-icon fa fa-check bigger-110"></i>      
+          <i class="ace-icon fa fa-check bigger-110"></i>
           Zapisz
         </button>
       </div>
@@ -30,4 +30,20 @@
       @Html.Raw(Model.Tresc);
       }
   </div>
-</div> 
+</div>
+
+
+@section Styles
+{
+  <link href="~/Content/jquery.cleditor.css" rel="stylesheet" />
+}
+
+@section scripts {
+  <script src="~/Scripts/jquery.cleditor.js"></script>
+  <script>
+    $(document).ready(function () {
+      $("#Tresc").cleditor();
+    });
+  </script>
+}
+
