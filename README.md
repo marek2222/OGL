@@ -21,15 +21,14 @@ Wzorce projektowe i architektoniczne wykorzystywane w .NET
 	public string UzytkownikId { get; set; }
 	public virtual Uzytkownik Uzytkownik { get; set; }
 	```
-	- oraz *-* (wiele ogłoszeń - wiele kategorii: wymaga dodatkowej klasa Ogloszenie_Kategoria dla której mamy relację 1-* )
-	```
-	public virtual ICollection<Ogloszenie_Kategoria>Ogloszenie_Kategoria { get; set; }	
-	```
+	- oraz *-* - wiele ogłoszeń - wiele kategorii: wymaga dodatkowej klasa Ogloszenie_Kategoria dla której mamy relację 1-*
+	`public virtual ICollection<Ogloszenie_Kategoria>Ogloszenie_Kategoria { get; set; }`	
 	- dodanie referencji: using System.ComponentModel.DataAnnotations;
 - dodanie klasy Kategoria:
 	- relacja *-* (wiele ogłoszeń - wiele kategorii: do klasy Ogloszenie_Kategoria mamy relację 1-* )
 	```
-	public Kategoria()    {   
+	public Kategoria()    
+	{   
 		this.Ogloszenie_Kategoria = new HashSet<Ogloszenie_Kategoria>();    
 	}
 	public ICollection<Ogloszenie_Kategoria> Ogloszenie_Kategoria { get; set; }
@@ -46,7 +45,10 @@ public virtual Ogloszenie Ogloszenie {get; set;}
 	- zmiana nazwy klasy ApplicationUser na Uzytkownik.
 	- relacja 1-* (jednego użytkownika do wielu ogłoszeń) 
 	```
-	public Uzytkownik()    {        this.Ogloszenia = new HashSet<Ogloszenie>();    } 
+	public Uzytkownik()    
+	{        
+		this.Ogloszenia = new HashSet<Ogloszenie>();    
+	} 
 	public virtual ICollection<Ogloszenie> Ogloszenia { get; private set; } 
 	```
 
@@ -126,7 +128,7 @@ Od teraz bez pytania po zmianach w klasach z modelem będą wykonywane również
 - Tworzenie migracji początkowej: 	`Add-migration startowa `
 - Uruchomienie pierwszej migracji:	`Update-Database`
 - W Web.config zmianiam nazwę do bazy danych z pliku .mdf na bazę Sql Server następująco: 
-	`connectionString="Data Source= (LocalDb)\v11.0;AttachDbFilename=|DataDirectory|\aspnet-OGL20140807102454.mdf;Initial Catalog=aspnet-OGL-20140807102454;Integrated Security=True" `
+	```connectionString="Data Source= (LocalDb)\v11.0;AttachDbFilename=|DataDirectory|\aspnet-OGL20140807102454.mdf;Initial Catalog=aspnet-OGL-20140807102454;Integrated Security=True" ```
 - Ponownie uruchomiemy migrację:
 	`Update-Database`
 - Uzupelniam metodę Seed()
@@ -136,15 +138,15 @@ Od teraz bez pytania po zmianach w klasach z modelem będą wykonywane również
 		System.Diagnostics.Debugger.Launch(); 
 	```
 - Zmiany w modelu i kolejna migracja: 
-	Dodaj pole Wiek do klasy Uzytkownik: 
-	`public int Wiek { get; set; }`
-	Zapisz plik i uruchom komendę: 	`Add-migration 1`	gdzie 1 to nazwa migracji. 
+	Dodaj pole Wiek do klasy Uzytkownik:
+	```public int Wiek { get; set; }```
+	Zapisz plik i uruchom komendę: 	``Add-migration 1```	gdzie 1 to nazwa migracji. 
 	- Aby było możliwe przypisanie wartości null, pole Wiek należy oznaczyć jako Nullable i uruchomić migrację	
-	`public int? Wiek { get; set; }`
+	```public int? Wiek { get; set; }```
 - W SeedUsers() zmień kod 
-	`var user = new Uzytkownik { UserName = "Admin" };`
+	```var user = new Uzytkownik { UserName = "Admin" };```
 	należy zastąpić następującym (aby przepisać wiek użytkownikowi): 
-	`var user = new Uzytkownik { UserName = "Admin", Wiek = 12 };`
+	```var user = new Uzytkownik { UserName = "Admin", Wiek = 12 };```
 	
 
 ## Etap 2. Krok 1. Dodawanie kontrolerów i widoków — akcja Index
