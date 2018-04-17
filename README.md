@@ -38,16 +38,16 @@ Etap 1. Krok 2. Utworzenie modelu danych w podejściu Code First
 		public virtual ICollection<Ogloszenie> Ogloszenia { get; private set; } 
 
 Etap 1. Krok 3. Tworzenie klasy kontekstu 
-- w folderze Models	 zmieniamy nazwę pliku z IdentityModels na OglContext. Po zmianie nazwy pliku otwórz plik kontekstu (teraz już o nazwie OglContext) i zmień nazwę klasy z ApplicationDbContext na OglContext (razem z konstruktorem i statyczną metodą) 
-	Dodatkowo zamień: IdentityDbContext<Uzytkownik> na: IdentityDbContext  usuń: , throwIfV1Schema: false 
-	Kod klasy po dokonaniu zmian: 
-		public class OglContext : IdentityDbContext {    
-			public OglContext()  : base("DefaultConnection")    {    }    
-			public static OglContext Create()    {        
-				return new OglContext();    
-			} 
-		}
--  Teraz w całej aplikacji trzeba zamienić ApplicationDbContext na OglContext
+- w folderze Models zmieniamy nazwę pliku z IdentityModels na OglContext. Po zmianie nazwy pliku otwórz plik kontekstu (teraz już o nazwie OglContext) i zmień nazwę klasy z ApplicationDbContext na OglContext (razem z konstruktorem i statyczną metodą) 
+Dodatkowo zamień: IdentityDbContext<Uzytkownik> na: IdentityDbContext  usuń: , throwIfV1Schema: false<br/>
+Kod klasy po dokonaniu zmian:<br/>
+	public class OglContext : IdentityDbContext {    
+		public OglContext()  : base("DefaultConnection")    {    }    
+		public static OglContext Create()    {        
+			return new OglContext();    
+		} 
+	}
+- Teraz w całej aplikacji trzeba zamienić ApplicationDbContext na OglContext
 - Jeśli nie chcesz korzystać z gotowej funkcjonalności lub nie musisz uwierzytelniać użytkowników, możesz utworzyć 	klasę dziedziczącą po DbContext: 	public class OglContext : DbContext {}  
 	Korzystamy tu z gotowej funkcjonalności lub chcę uwierzytelniać użytkowników, więc nie korzystam z DbContext.
 - Teraz dodaj do niej właściwości DbSet reprezentujące w pamięci kontekstu tabele z bazy danych. Oto kod:
