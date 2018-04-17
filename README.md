@@ -17,22 +17,24 @@ Wzorce projektowe i architektoniczne wykorzystywane w .NET
 - dodanie do niego klasy Ogloszenie, 
 - wypełnienie ciała klasy: 
 	- relacja 1-* (wiele ogłoszeń do jednego użytkownika) 
-	```
-	public string UzytkownikId { get; set; }
-	public virtual Uzytkownik Uzytkownik { get; set; }
-	```
-	- oraz *-* - wiele ogłoszeń - wiele kategorii: wymaga dodatkowej klasa Ogloszenie_Kategoria dla której mamy relację 1-*
-	`public virtual ICollection<Ogloszenie_Kategoria>Ogloszenie_Kategoria { get; set; }`	
+```
+public string UzytkownikId { get; set; }
+public virtual Uzytkownik Uzytkownik { get; set; }
+```
+	- oraz wiele ogłoszeń - wiele kategorii: wymaga dodatkowej klasa Ogloszenie_Kategoria dla której mamy relację 1-*
+```
+public virtual ICollection<Ogloszenie_Kategoria>Ogloszenie_Kategoria { get; set; }
+```	
 	- dodanie referencji: using System.ComponentModel.DataAnnotations;
 - dodanie klasy Kategoria:
-	- relacja *-* (wiele ogłoszeń - wiele kategorii: do klasy Ogloszenie_Kategoria mamy relację 1-* )
-	```
-	public Kategoria()    
-	{   
-		this.Ogloszenie_Kategoria = new HashSet<Ogloszenie_Kategoria>();    
-	}
-	public ICollection<Ogloszenie_Kategoria> Ogloszenie_Kategoria { get; set; }
-	```
+	- relacja wiele ogłoszeń - wiele kategorii: do klasy Ogloszenie_Kategoria mamy relację 1-*
+```
+public Kategoria()    
+{   
+	this.Ogloszenie_Kategoria = new HashSet<Ogloszenie_Kategoria>();    
+}
+public ICollection<Ogloszenie_Kategoria> Ogloszenie_Kategoria { get; set; }
+```
 - dodanie klasy Ogloszenie_Kategoria
 ```
 public Ogloszenie_Kategoria()    {    }    
@@ -44,13 +46,13 @@ public virtual Ogloszenie Ogloszenie {get; set;}
 - klasa Uzytkownik
 	- zmiana nazwy klasy ApplicationUser na Uzytkownik.
 	- relacja 1-* (jednego użytkownika do wielu ogłoszeń) 
-	```
-	public Uzytkownik()    
-	{        
-		this.Ogloszenia = new HashSet<Ogloszenie>();    
-	} 
-	public virtual ICollection<Ogloszenie> Ogloszenia { get; private set; } 
-	```
+```
+public Uzytkownik()    
+{        
+	this.Ogloszenia = new HashSet<Ogloszenie>();    
+} 
+public virtual ICollection<Ogloszenie> Ogloszenia { get; private set; } 
+```
 
 ## Etap 1. Krok 3. Tworzenie klasy kontekstu 
 - w folderze Models zmieniamy nazwę pliku z IdentityModels na OglContext. Po zmianie nazwy pliku otwórz plik kontekstu (teraz już o nazwie OglContext) i zmień nazwę klasy z ApplicationDbContext na OglContext (razem z konstruktorem i statyczną metodą) 
@@ -306,5 +308,41 @@ public class OgloszenieRepo : IOgloszenieRepo {
 	} 
 }
 ```
-	- Instalacja kontenera IoC Unity: Unity.Mvc 
-	
+- Instalacja kontenera IoC Unity: Unity.Mvc. Po zainstalowaniu biblioteki w klasie UnityConfig w folderze App_Start dopisz następujący kod do metody RegisterTypes():
+```
+public class UnityConfig {    
+	#region Unity Container 
+	...
+	#endregion   
+	public static void RegisterTypes(IUnityContainer container)    {        
+container.RegisterType<AccountController>(new InjectionConstructor());        container.RegisterType<ManageController>(new InjectionConstructor());        container.RegisterType<IOgloszenieRepo, OgloszenieRepo>(new PerRequestLifetimeManager());    
+} 
+```	
+- Wstrzykiwanie kontekstu do repozytorium: 
+	- utwórz interfejs IOglContext w folderze IRep.
+```
+public interface IOglContext {    
+	DbSet<Kategoria> Kategorie { get; set; }
+    DbSet<Ogloszenie> Ogloszenia { get; set; }    
+	DbSet<Uzytkownik> Uzytkownik { get; set; }    
+	DbSet<Ogloszenie_Kategoria> Ogloszenie_Kategoria { get; set; }    
+	int SaveChanges();    
+	Database Database { get; } 
+} 
+```
+	- Przejdź do pliku OglContext i zamień pierwszą linię z: 'public class OglContext : IdentityDbContext' na: 
+```
+public class OglContext : IdentityDbContext, IOglContext
+```
+	- Przejdź teraz do OgloszenieRepo i utwórz konstruktor, w którym będzie wstrzykiwana instancja repozytorium. Kod:
+```
+private readonly IOglContext _db; 
+public OgloszenieRepo(IOglContext db) {    
+	_db = db; 
+} 
+public IQueryable<Ogloszenie> PobierzOgloszenia() {    
+	_db.Database.Log = message => Trace.WriteLine(message);    
+	var ogloszenia = _db.Ogloszenia.AsNoTracking();    
+	return ogloszenia; 
+} 
+```
