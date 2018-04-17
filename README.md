@@ -140,13 +140,17 @@ Od teraz bez pytania po zmianach w klasach z modelem będą wykonywane również
 - Zmiany w modelu i kolejna migracja: 
 	Dodaj pole Wiek do klasy Uzytkownik:
 	```public int Wiek { get; set; }```
-	Zapisz plik i uruchom komendę: 	``Add-migration 1```	gdzie 1 to nazwa migracji. 
+	Zapisz plik i uruchom komendę: 	```Add-migration 1```	gdzie 1 to nazwa migracji. 
 	- Aby było możliwe przypisanie wartości null, pole Wiek należy oznaczyć jako Nullable i uruchomić migrację	
 	```public int? Wiek { get; set; }```
 - W SeedUsers() zmień kod 
-	```var user = new Uzytkownik { UserName = "Admin" };```
-	należy zastąpić następującym (aby przepisać wiek użytkownikowi): 
-	```var user = new Uzytkownik { UserName = "Admin", Wiek = 12 };```
+```
+var user = new Uzytkownik { UserName = "Admin" };
+```
+należy zastąpić następującym (aby przepisać wiek użytkownikowi): 
+```
+var user = new Uzytkownik { UserName = "Admin", Wiek = 12 };
+```
 	
 
 ## Etap 2. Krok 1. Dodawanie kontrolerów i widoków — akcja Index
@@ -195,8 +199,8 @@ Od teraz bez pytania po zmianach w klasach z modelem będą wykonywane również
 	tr:first-child{    background-color:#efefef; }
 	tr:hover td{    background-color:#efefef; } 
 	```
-		oraz dodaj odstępy pomiędzy przyciskami: 
-	`.btn {    margin:2px; }`
+oraz dodaj odstępy pomiędzy przyciskami: 
+	```.btn {    margin:2px; }```
 - Optymalizacja pod kątem pozycjonowania — SEO: tytuł, metaopis i słowa kluczowe
 	- _Layout.cshtml - dodaj pola description i keywords, ponieważ znacznik title został dodany domyślnie
 	```
@@ -218,81 +222,81 @@ Od teraz bez pytania po zmianach w klasach z modelem będą wykonywane również
 ## Etap 3. Krok 1. Poprawa architektury aplikacji
 - Przeniesienie zapytania LINQ do osobnej metody
 	```
-	public ActionResult Index() {    
-		var ogloszenia = db.Ogloszenia.AsNoTracking();    
-		return View(ogloszenia); 
-	} 
+public ActionResult Index() {    
+	var ogloszenia = db.Ogloszenia.AsNoTracking();    
+	return View(ogloszenia); 
+} 
 	```
 	Następnie przenieś zapytanie oraz funkcję odpowiedzialną za logowanie zapytań do osobnej metody o nazwie PobierzOgloszenia(), która będzie zwracać typ IQueryable<Ogloszenie>. Kod po przenosinach wygląda następująco: 
-		```
-		public ActionResult Index() {    
-			var ogloszenia = PobierzOgloszenia();    
-			return View(ogloszenia); 
-		} 
-		public IQueryable<Ogloszenie> PobierzOgloszenia() {    
-			db.Database.Log = message => Trace.WriteLine(message);    
-			return db.Ogloszenia.AsNoTracking(); 
-		}
-		```			
+	```
+public ActionResult Index() {    
+	var ogloszenia = PobierzOgloszenia();    
+	return View(ogloszenia); 
+} 
+public IQueryable<Ogloszenie> PobierzOgloszenia() {    
+	db.Database.Log = message => Trace.WriteLine(message);    
+	return db.Ogloszenia.AsNoTracking(); 
+}
+	```			
 - Przeniesienie metody do repozytorium
 	- dodaj folder o nazwie Repo
 	- dodaj do niej klasę OgloszenieRepo
-		```
-		public class OgloszenieRepo {    
-			private OglContext db = new OglContext();    
-			public IQueryable<Ogloszenie> PobierzOgloszenia()    {        
-				db.Database.Log = message => Trace.WriteLine(message);        
-				return db.Ogloszenia.AsNoTracking();    
-			} 
-		}
-		```
+	```
+public class OgloszenieRepo {    
+	private OglContext db = new OglContext();    
+	public IQueryable<Ogloszenie> PobierzOgloszenia()    {        
+		db.Database.Log = message => Trace.WriteLine(message);        
+		return db.Ogloszenia.AsNoTracking();    
+	} 
+}
+	```
 	- zmien klasę OgloszenieController
-		```
-		public class OgloszenieController : Controller {    
-			OgloszenieRepo repo = new OgloszenieRepo();     
-			// GET: /Ogloszenie/    
-			public ActionResult Index()    {        
-				var ogloszenia = repo.PobierzOgloszenia();        
-				return View(ogloszenia);    
-			}    
-			// Tutaj zakomentowany kod/akcje 
-		} 
-		```
+	```
+public class OgloszenieController : Controller {    
+	OgloszenieRepo repo = new OgloszenieRepo();     
+	// GET: /Ogloszenie/    
+	public ActionResult Index()    {        
+		var ogloszenia = repo.PobierzOgloszenia();        
+		return View(ogloszenia);    
+	}    
+	// Tutaj zakomentowany kod/akcje 
+} 
+	```
 
 ## Etap 3. Krok 2. Zastosowanie kontenera Unity — IoC 
 - Wstrzykiwanie repozytorium poprzez konstruktor w kontrolerze
-	```
-	public class OgloszenieController : Controller {    
-		private readonly IOgloszenieRepo _repo;    
-		public OgloszenieController(IOgloszenieRepo repo)    {        
-			_repo = repo;    
-		}    
-		// GET: /Ogloszenie/    
-		public ActionResult Index()    {        
-			var ogloszenia = _repo.PobierzOgloszenia();        
-			return View(ogloszenia);    
-		}    
-		// Tutaj zakomentowany kod/akcje 
-	}
-	```
+```
+public class OgloszenieController : Controller {    
+	private readonly IOgloszenieRepo _repo;    
+	public OgloszenieController(IOgloszenieRepo repo)    {        
+		_repo = repo;    
+	}    
+	// GET: /Ogloszenie/    
+	public ActionResult Index()    {        
+		var ogloszenia = _repo.PobierzOgloszenia();        
+		return View(ogloszenia);    
+	}    
+	// Tutaj zakomentowany kod/akcje 
+}
+```
 - Tworzenie interfejsu dla repozytorium
 	- dodaj folder o nazwie IRepo
 	- a w nim interfejs IOgloszenieRepo
 	```
-		public interface IOgloszenieRepo {    
-			IQueryable<Ogloszenie> PobierzOgloszenia(); 
-		}
+public interface IOgloszenieRepo {    
+	IQueryable<Ogloszenie> PobierzOgloszenia(); 
+}
 	```
 	- Repozytorium OgloszenieRepo musi dziedziczyć po interfejsie IOgloszenieRepo i implementować jego składowe
 	```
-		public class OgloszenieRepo : IOgloszenieRepo {    
-			private OglContext db = new OglContext();    
-			public IQueryable<Ogloszenie> PobierzOgloszenia()    {        
-				db.Database.Log = message => Trace.WriteLine(message);
-				var ogloszenia = db.Ogloszenia.AsNoTracking();
-				return ogloszenia;    
-			} 
-		}
+public class OgloszenieRepo : IOgloszenieRepo {    
+	private OglContext db = new OglContext();    
+	public IQueryable<Ogloszenie> PobierzOgloszenia()    {        
+		db.Database.Log = message => Trace.WriteLine(message);
+		var ogloszenia = db.Ogloszenia.AsNoTracking();
+		return ogloszenia;    
+	} 
+}
 	```
 	- Instalacja kontenera IoC Unity: Unity.Mvc 
 	
