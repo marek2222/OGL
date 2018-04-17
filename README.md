@@ -38,31 +38,31 @@ Etap 1. Krok 2. Utworzenie modelu danych w podejściu Code First
 		public virtual ICollection<Ogloszenie> Ogloszenia { get; private set; } 
 
 Etap 1. Krok 3. Tworzenie klasy kontekstu 
-	- w folderze Models	 zmieniamy nazwę pliku z IdentityModels na OglContext. Po zmianie nazwy pliku otwórz plik kontekstu (teraz już o nazwie OglContext) i zmień nazwę klasy z ApplicationDbContext na OglContext (razem z konstruktorem i statyczną metodą) 
-		Dodatkowo zamień: IdentityDbContext<Uzytkownik> na: IdentityDbContext  usuń: , throwIfV1Schema: false 
-		Kod klasy po dokonaniu zmian: 
-			public class OglContext : IdentityDbContext {    
-				public OglContext()  : base("DefaultConnection")    {    }    
-				public static OglContext Create()    {        
-					return new OglContext();    
-				} 
-			}
-	-  Teraz w całej aplikacji trzeba zamienić ApplicationDbContext na OglContext
-	- Jeśli nie chcesz korzystać z gotowej funkcjonalności lub nie musisz uwierzytelniać użytkowników, możesz utworzyć 	klasę dziedziczącą po DbContext: 	public class OglContext : DbContext {}  
-		Korzystamy tu z gotowej funkcjonalności lub chcę uwierzytelniać użytkowników, więc nie korzystam z DbContext.
-	- Teraz dodaj do niej właściwości DbSet reprezentujące w pamięci kontekstu tabele z bazy danych. Oto kod:
-		public class OglContext : DbContext {    
-			public OglContext()        : base("DefaultConnection")    {    }    
+- w folderze Models	 zmieniamy nazwę pliku z IdentityModels na OglContext. Po zmianie nazwy pliku otwórz plik kontekstu (teraz już o nazwie OglContext) i zmień nazwę klasy z ApplicationDbContext na OglContext (razem z konstruktorem i statyczną metodą) 
+	Dodatkowo zamień: IdentityDbContext<Uzytkownik> na: IdentityDbContext  usuń: , throwIfV1Schema: false 
+	Kod klasy po dokonaniu zmian: 
+		public class OglContext : IdentityDbContext {    
+			public OglContext()  : base("DefaultConnection")    {    }    
 			public static OglContext Create()    {        
 				return new OglContext();    
-			}    
-			public DbSet<Kategoria> Kategorie { get; set; }    
-			public DbSet<Ogloszenie> Ogloszenia { get; set; }    
-			public DbSet<Uzytkownik> Uzytkownik { get; set; }    
-			public DbSet<Ogloszenie_Kategoria> Ogloszenie_Kategoria { get; set; } 
-		} 
-	-  Aby aplikacja nie zmieniała nazw, trzeba nadpisać konwencję. Jeśli chcesz to zrobić dla kontekstu, skorzystaj z metody: modelBuilder.Conventions.Remove<PluralizingTableNameConvention>(); 
-	Następnie dla relacji Ogloszenie – Uzytkownik włączono CascadeDelete za pomocą Fluent API.
+			} 
+		}
+-  Teraz w całej aplikacji trzeba zamienić ApplicationDbContext na OglContext
+- Jeśli nie chcesz korzystać z gotowej funkcjonalności lub nie musisz uwierzytelniać użytkowników, możesz utworzyć 	klasę dziedziczącą po DbContext: 	public class OglContext : DbContext {}  
+	Korzystamy tu z gotowej funkcjonalności lub chcę uwierzytelniać użytkowników, więc nie korzystam z DbContext.
+- Teraz dodaj do niej właściwości DbSet reprezentujące w pamięci kontekstu tabele z bazy danych. Oto kod:
+	public class OglContext : DbContext {    
+		public OglContext()        : base("DefaultConnection")    {    }    
+		public static OglContext Create()    {        
+			return new OglContext();    
+		}    
+		public DbSet<Kategoria> Kategorie { get; set; }    
+		public DbSet<Ogloszenie> Ogloszenia { get; set; }    
+		public DbSet<Uzytkownik> Uzytkownik { get; set; }    
+		public DbSet<Ogloszenie_Kategoria> Ogloszenie_Kategoria { get; set; } 
+	} 
+-  Aby aplikacja nie zmieniała nazw, trzeba nadpisać konwencję. Jeśli chcesz to zrobić dla kontekstu, skorzystaj z metody: modelBuilder.Conventions.Remove<PluralizingTableNameConvention>(); 
+Następnie dla relacji Ogloszenie – Uzytkownik włączono CascadeDelete za pomocą Fluent API. 	
 	Oto kod:
 		protected override void OnModelCreating(DbModelBuilder modelBuilder) {    
 			// Potrzebne dla klas Identity    
@@ -78,16 +78,16 @@ Etap 1. Krok 3. Tworzenie klasy kontekstu
 			// i włączyć CascadeDelete dla tego powiązania    
 			modelBuilder.Entity<Ogloszenie>().HasRequired(x => x.Uzytkownik).WithMany(x => x.Ogloszenia) .HasForeignKey(x => x.UzytkownikId) .WillCascadeOnDelete(true); 
 		} 
-	-  W folderze Models znajdują się jeszcze pliki: AccountViewModels i ManageViewModels. Są to klasy z ViewModel na potrzeby logowania przez zewnętrzne serwisy i do zarządzania kontem użytkownika. Należy utworzyć folder Views w folderze Models i przenieść tam obydwa pliki. 
+-  W folderze Models znajdują się jeszcze pliki: AccountViewModels i ManageViewModels. Są to klasy z ViewModel na potrzeby logowania przez zewnętrzne serwisy i do zarządzania kontem użytkownika. Należy utworzyć folder Views w folderze Models i przenieść tam obydwa pliki. 
 
 Etap 1. Krok 4. Przenoszenie warstwy modelu do osobnego projektu 		
-	- Utwórz mowy projekt ASP .NET Web Application i nazwij projekt Repozytorium. Wybierz template: Empty
-	- Dodawanie referencji pomiędzy projektami:  Dodaj referencję do Repozytorium z projektu OGL, kliknij prawym przyciskiem myszy References w projekcie OGL (rysunek 8.24) i wybierz Add Reference: Repozytorium. 
-	- Ustawienie projektu startowego na OGL
-	- Instalacja bibliotek dla projektu Repozytorium: Entity Framework, Microsoft ASP.NET MVC, Microsoft ASP.NET Identity Framework 
-	- Przenoszenie plików z modelem do osobnej warstwy (projektu) z OGL do Repozytorium, poza ManageViewModels.cs ponieważ posiada on referencje do Microsoft.Owin.Security, a nie chcemy instalować pakietu OWIN w projekcie Repozytorium. 
-	- Zmień nazwy w aplikacji z: OGL.Models na: Repozytorium.Models
-	- i Rebuild Solution
+- Utwórz mowy projekt ASP .NET Web Application i nazwij projekt Repozytorium. Wybierz template: Empty
+- Dodawanie referencji pomiędzy projektami:  Dodaj referencję do Repozytorium z projektu OGL, kliknij prawym przyciskiem myszy References w projekcie OGL (rysunek 8.24) i wybierz Add Reference: Repozytorium. 
+- Ustawienie projektu startowego na OGL
+- Instalacja bibliotek dla projektu Repozytorium: Entity Framework, Microsoft ASP.NET MVC, Microsoft ASP.NET Identity Framework 
+- Przenoszenie plików z modelem do osobnej warstwy (projektu) z OGL do Repozytorium, poza ManageViewModels.cs ponieważ posiada on referencje do Microsoft.Owin.Security, a nie chcemy instalować pakietu OWIN w projekcie Repozytorium. 
+- Zmień nazwy w aplikacji z: OGL.Models na: Repozytorium.Models
+- i Rebuild Solution
 	
 Etap 1. Krok 5. Migracje
 	- Instalacja migracji: W oknie Package Manager Console wybieramy projekt Repozytorium i wpisujemy Enable-Migration. Zostanie utworzony folder Migrations, a w nim plik konfiguracyjny Configuration
