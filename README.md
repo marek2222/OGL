@@ -1326,4 +1326,152 @@ Kompletny kod widoku:
 ```
 
 
-Etap 7. Ogłoszenia użytkownika, kategorie, cache i ViewModel Zakładka Moje ogłoszenia 
+## Etap 7. Ogłoszenia użytkownika, kategorie, cache i ViewModel 
+
+* Zakładka Moje ogłoszenia 
+Teraz dodamy zakładkę, która wyświetli tylko ogłoszenia dodane przez zalogowanego użytkownika. Wykorzystamy gotowy plik z widokiem Index. Przeniesiemy jego zawartość i dodamy nowy plik z widokiem o nazwie MojeOgloszenia do folderu Views/Ogloszenie, do którego wcześniej została skopiowana zawartość pliku Index.
+Dodaj teraz akcję do kontrolera Ogloszenie o nazwie MojeOgloszenia: 
+
+* Cache 
+Do cachowania zostanie wykorzystany atrybut [OutputCache], który zapisuje wynik akcji w pamięci i przy kolejnych żądaniach do tej akcji przez określoną ilość czasu zwraca zapisane w pamięci dane, zamiast wykonywać akcję. Dodaj do akcji MojeOgloszenia atrybut: 
+```
+[OutputCache(Duration=1000)]
+```
+
+Akcja wygląda teraz następująco: 
+```
+[OutputCache(Duration=1000)] 
+public ActionResult MojeOgloszenia(int? page) 
+{    
+	... 
+} 
+```
+
+* Kategorie 
+Podobnie jak przy ogłoszeniach, dodaj kontroler. Wybierz opcję MVC5 Controller with views, using Entity Framework i nazwij go KategoriaController. Wybierz klasę z modelem Kategoria i klasę z kontekstem, czyli OglContext. Zostaną wygenerowane widoki i kontroler z akcjami CRUD. Tym razem usuń wszystkie akcje z kontrolera oprócz akcji Index. Nie będzie potrzeby implementacji metod Create, Details, Edit i Delete, ponieważ robi się to analogicznie jak w przypadku ogłoszeń. Zostanie tylko zaimplementowana akcja Index, aby wyświetlić wszystkie dostępne kategorie.
+
+
+* Implementacja interfejsu IKategoriaRepo i klasy repozytorium 
+Dodaj teraz interfejs IKategoriaRepo do folderu IRepo oraz klasę KategoriaRepo do folderu Repo. Do interfejsu dodaj deklarację metody PobierzKategorie(). 
+
+* Implementacja kontrolera 
+Podobnie jak w kontrolerze OgloszenieController, będzie można wstrzykiwać instancje repozytorium, tylko tym razem będzie to KategoriaRepo, a nie OgloszenieRepo. W akcji Index wykorzystamy metodę PobierzKategorie() z repozytorium, aby pobrać listę kategorii. 
+
+* Wstrzykiwanie implementacji dzięki IoC
+Aplikacja nie może utworzyć instancji interfejsu IKategoriaRepo, co jest prawdą, ponieważ nie można utworzyć instancji interfejsu. Oznacza to, że w miejsce interfejsu nie została wstrzyknięta instancja klasy repozytorium. Jest to oczywiste, ponieważ w konfiguracji pakietu Unity nie ustawiono wstrzykiwania klasy KategoriaRepo w miejsce interfejsu IKategoriaRepo. Przejdź do pliku UnityConfig z folderu App_Start i dodaj w metodzie RegisterTypes() następującą linijkę:
+```
+container.RegisterType<IKategoriaRepo, KategoriaRepo>(new PerRequestLifetimeManager()); 
+```
+
+* Wyświetlanie ogłoszeń z wybranej kategorii LINQ (Query Syntax) 
+Ostatnim krokiem będzie utworzenie widoku dla listy ogłoszeń z wybranej kategorii. Po kliknięciu nazwy kategorii będzie można przejść do listy ogłoszeń z tej kategorii. 
+
+* Zastosowanie HTML helpera — Html.Action
+Kolejnym krokiem jest wygenerowanie akcji Partial z kontrolera Ogloszenie (adres URL /Ogloszenie/Partial). Domyślnie akcja zwraca widok pokazany na rysunku 8.125. Po otworzeniu podstrony z ogłoszeniami dla wybranej kategorii zostanie wyświetlony ten sam widok Partial pod listą ogłoszeń. Dodaj na samym końcu pliku z widokiem PokazOgloszenia linijkę: @Html.Action("Partial","Ogloszenie",null) Pod widokiem z ogłoszeniami z kategorii został wyświetlony widok Partial prezentujący wszystkie ogłoszenia (rysunek 8.126). Tym razem widok Partial wygląda lepiej, ponieważ w szablonie zostały wczytane style CSS. HTML helper Action() wywołuje akcję z kontrolera i wyświetla „widok w widoku”.
+
+* Zastosowanie ViewModel 
+W przedstawionym rozwiązaniu brakuje nazwy kategorii, z której są ogłoszenia. Trzeba więc pobrać nazwę z bazy danych na podstawie id, a następnie przekazać do modelu. Wcześniej korzystaliśmy z ViewBag, aby przesłać dane do widoku. Teraz użyjemy ViewModel, a więc specjalnej klasy z modelem, która będzie pasowała tylko do tego widoku. W klasie znajdzie się lista ogłoszeń oraz nazwa kategorii. Na początek zostanie utworzona klasa ViewModel o nazwie OgloszeniaZKategoriiViewModels w folderze Models/Views. 
+W kontrolerze KategoriaController utwórz nowy obiekt typu OgloszeniaZKategoriiViewModels. Następnie przypisz do kolekcji z ViewModel o nazwie Ogloszenia listę ogłoszeń pobranych z bazy danych, a do pola NazwaKategorii przypisz wartość zwróconą z metody NazwaDlaKategorii(). 
+Ostatnim elementem jest utworzenie opierającego się na ViewModel typowanego widoku OgloszeniaZKategoriiViewModels. Na początku trzeba zmienić typ widoku, ponieważ teraz będziemy pobierać dane w formie ViewModel, a nie w formie kolekcji ogłoszeń. 
+
+
+## Etap 8. Dane w JSON, zarządzanie relacją „wiele do wielu” i attribute routing 
+W tym etapie utworzymy akcję, która będzie zwracać dane kategorii w postaci JSON. Dodaj metodę do kontrolera KategoriaController o nazwie KategorieWJson. Następnie pobierz dane za pomocą metody PobierzKategorie() z repozytorium. W odróżnieniu od standardowych metod, które zwracają widoki, ta metoda zwróci dane w formacie JSON: 
+```
+public ActionResult KategorieWJson() 
+{    
+	var kategorie = _repo.PobierzKategorie().AsNoTracking();    
+	return Json(kategorie, JsonRequestBehavior.AllowGet);
+} 
+```
+
+Poniżej pokazano dane zwrócone po odwiedzeniu adresu /Kategoria/KategorieWJson/: 
+```
+[{"Id":1,"Nazwa":"Nazwa kategorii1","ParentId":1,"MetaTytul":"Tytuł kategorii1","MetaOpis":"Opis kategorii1","MetaSlowa":"Słowa kluczowe do kategorii1","Tresc":"Treść ogłoszenia1","Ogloszenie_Kategoria":[]}, {"Id":2,"Nazwa":"Nazwa kategorii2","ParentId":2,"MetaTytul":"Tytuł kategorii2","MetaOpis":"Opis kategorii2","MetaSlowa":"Słowa kluczowe do kategorii2","Tresc":"Treść ogłoszenia2","Ogloszenie_Kategoria":[]}, 
+... 
+,{"Id":9,"Nazwa":"Nazwa kategorii9","ParentId":9,"MetaTytul":"Tytuł kategorii9","MetaOpis":"Opis kategorii9","MetaSlowa":"Słowa kluczowe do kategorii9","Tresc":"Treść ogłoszenia9","Ogloszenie_Kategoria":[]}, {"Id":10,"Nazwa":"Nazwa kategorii10","ParentId":10,"MetaTytul":"Tytuł kategorii10","MetaOpis":"Opis kategorii10","MetaSlowa":"Słowa kluczowe do kategorii10","Tresc":"Treść ogłoszenia10","Ogloszenie_Kategoria":[]}] 
+```
+
+* PartialView a dane w formacie JSON lub XML 
+Dane zwrócone z widoku Partial posiadają formatowanie HTML. Dane zwrócone z Web serwisu, Web API lub z akcji w formacie JSON nie mają kodu HTML, tylko strukturę JSON bądź XML. Dane w formacie HTML mogą zostać wklejone bezpośrednio na stronę, podobnie jak przy użyciu helpera Html.Action. Dane z Web serwisu muszą zostać przetworzone na kod HTML, np. przy użyciu jQuery , aby mogły być wyświetlone na stronie. 
+
+* Użycie attribute routingu 
+Skorzystamy z attribute routingu, aby uprościć ścieżkę do danych kategorii zwracanych w postaci JSON. Aby włączyć attribute routing, należy dodać następującą linijkę w pliku RouteConfig w metodzie RegisterRoutes(): routes.MapMvcAttributeRoutes(); 
+
+Attribute routing musi być włączony przed innymi ścieżkami, ponieważ wybierana jest pierwsza pasująca ścieżka. Kod metody RegisterRoutes() po zmianach wygląda jak poniżej: 
+```
+public static void RegisterRoutes(RouteCollection routes) 
+{    	
+	routes.IgnoreRoute("{resource}.axd/{*pathInfo}");    
+	routes.MapMvcAttributeRoutes();    
+	routes.MapRoute(name: "Default", url: "{controller}/{action}/{id}", defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }    ); 
+} 
+```
+
+Mając włączony attribute routing, dodaj atrybut `[Route("JSON")]` do akcji KategorieWJson z kontrolera KategoriaController. Kod akcji z atrybutem: 
+```
+[Route("JSON")] 
+public ActionResult KategorieWJson() 
+{    
+	var kategorie = _repo.PobierzKategorie().AsNoTracking();    
+	return Json(kategorie, JsonRequestBehavior.AllowGet); 
+} 
+```
+
+Od teraz akcja KategorieWJson jest dostępna pod konkretnym adresem URL (localhost:50304/JSON).
+Przed zastosowaniem attribute routingu metoda była dostępna pod adresem URL (localhost:50304/Kategoria/KategorieWJson). Jeśli sprawdzisz stary adres URL, pojawi się błąd 404.
+
+* Zarządzanie relacją „wiele do wielu” i autocomplete 
+Aplikacja jest już praktycznie gotowa i ma zaimplementowane prawie wszystkie możliwe scenariusze, jednak brakuje zarządzania powiązaniem „wiele do wielu” pomiędzy kategorią a ogłoszeniem. To zawsze problematyczne powiązanie, ponieważ jeśli jest dużo kategorii, to po wczytaniu wszystkich powstałaby bardzo długa lista. Można wyświetlić checkboxy do zaznaczania, jednak wtedy trudno będzie znaleźć wybraną kategorię. Można wykorzystać podpowiadanie na podstawie tego, co się wpisze (ang. Autocomplete), podobnie jak robi to np. wyszukiwarka Google. Dane będą pobierane za pomocą jQuery i przesyłane w postaci JSON. 
+Dodaj dodatkowy przycisk w widoku MojeOgloszenia : 
+```
+<br />@Html.ActionLink("Dodaj kategorie ", "DodajKategorie", new { id = item.Id }, new { @class = "btn btn-success" })
+```
+
+## Dodatek na AspNetMvc.pl 
+
+## Rozdział 1. Wyświetlanie danych z API przy pomocy jQuery i AJAX 
+* Aktualizacja pliku _Layout.cshtml 
+	- Zmiana nazwy odnośnika 
+	- Dodanie dodatkowych odnośników w menu
+* Wyświetlanie danych z API na stronie przy pomocy jQuery 
+	- Kontroler  
+	- Widok 
+	- Kod jQuery i JavaScript dla widoku
+		- Metoda ShowResponse()  
+	- Kompletny kod widoku
+
+## Rozdział 2. Bezpieczne dodawanie i usuwanie zoptymalizowanych zdjęć z miniaturkami do chmury Azure (z powodu niechęci podawania danych karty debetowej zapisałem dane do SQL Servera)    
+* Dodawanie klasy z modelem 
+* Aktualizacja DbContext 
+* Repozytorium dla zdjęć  
+	- Metody w repozytorium
+	- Interfejs dla repozytorium  
+	- Implementacja repozytorium 
+	- Wstrzykiwanie implementacji przy pomocy IoC 
+* Migracje dla klasy Zdjecie 
+* Instalacja biblioteki ImageResizer
+* Implementacja klas odpowiedzialnych za obróbkę i zapis zdjęć 
+* Sprawdzenie rozszerzenia pliku 
+* Dodawanie Zdjęć 
+* Kontroler do galerii zdjęć 
+* Konstruktor i wstrzykiwanie repozytorium
+* Metoda Index 
+* Widok dla galerii zdjęć 
+* Kod HTML dla widoku 
+	- Kod JS i jQuery dla iwidoku
+
+
+## Rozdział 3. Bezpieczna walidacja pól wejściowych z kodem HTML z edytora WYSIWYG  
+- Biblioteka do walidacji: HtmlSanitizer 
+- Klasy z modelem 
+- Kod klasy Edytor  
+- Klasa Uzytkownik 
+- Aktualizacja DbContext 
+- Migracje  
+- Kontroler  
+- Kod metody GET akcji EdytujTresc 
+- Kod metody POST akcji EdytujTresc
+- Kompletny kod kontrolera: Widok 
+- Edytor WYSIWYG CLEditor
+
