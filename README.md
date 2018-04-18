@@ -1463,15 +1463,14 @@ Dodaj dodatkowy przycisk w widoku MojeOgloszenia :
 
 
 ## Rozdział 3. Bezpieczna walidacja pól wejściowych z kodem HTML z edytora WYSIWYG  
-- Biblioteka do walidacji: HtmlSanitizer 
-- Klasy z modelem 
-- Kod klasy Edytor  
-- Klasa Uzytkownik 
-- Aktualizacja DbContext 
-- Migracje  
-- Kontroler  
-- Kod metody GET akcji EdytujTresc 
-- Kod metody POST akcji EdytujTresc
-- Kompletny kod kontrolera: Widok 
-- Edytor WYSIWYG CLEditor
+* Biblioteka do walidacji: HtmlSanitizer 
+* Klasy z modelem 
+* Kod klasy Edytor  
+* Klasa Uzytkownik 
+* Aktualizacja DbContext 
+* Migracje  
+* Kontroler  
+	- Kod metody GET akcji EdytujTresc 
+	- Kod metody POST akcji EdytujTresc
+* Edytor WYSIWYG CLEditor
 
