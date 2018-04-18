@@ -214,13 +214,10 @@ Zaimportuj bibliotekę (using System.Diagnostics;) dla podkreślonego kodu. Uruc
 @Html.ActionLink("Usuń", "Delete", new { id = item.Id }, new { @class = "btn btndanger" })
 ```
 
-* Podświetlanie wierszy za pomocą CSS: Site.css: 
+* Site.css: Podświetlanie wierszy za pomocą CSS oraz dodanie odstępów pomiędzy przyciskami
 ```
 tr:first-child{	background-color:#efefef; }
 tr:hover td{    background-color:#efefef; } 
-```
-oraz dodaj odstępy pomiędzy przyciskami: 
-```
 .btn {    margin:2px; }
 ```
 
@@ -267,28 +264,28 @@ public IQueryable<Ogloszenie> PobierzOgloszenia() {
 * Przeniesienie metody do repozytorium
 	- dodaj folder o nazwie Repo
 	- dodaj do niej klasę OgloszenieRepo
-```
-public class OgloszenieRepo {    
-	private OglContext db = new OglContext();    
-	public IQueryable<Ogloszenie> PobierzOgloszenia()    {        
-		db.Database.Log = message => Trace.WriteLine(message);        
-		return db.Ogloszenia.AsNoTracking();    
-	} 
-}
-```
+	```
+	public class OgloszenieRepo {    
+		private OglContext db = new OglContext();    
+		public IQueryable<Ogloszenie> PobierzOgloszenia()    {        
+			db.Database.Log = message => Trace.WriteLine(message);        
+			return db.Ogloszenia.AsNoTracking();    
+		} 
+	}
+	```
 
 	- zmien klasę OgloszenieController
-```
-public class OgloszenieController : Controller {    
-	OgloszenieRepo repo = new OgloszenieRepo();     
-	// GET: /Ogloszenie/    
-	public ActionResult Index()    {        
-		var ogloszenia = repo.PobierzOgloszenia();        
-		return View(ogloszenia);    
-	}    
-	// Tutaj zakomentowany kod/akcje 
-} 
-```
+	```
+	public class OgloszenieController : Controller {    
+		OgloszenieRepo repo = new OgloszenieRepo();     
+		// GET: /Ogloszenie/    
+		public ActionResult Index()    {        
+			var ogloszenia = repo.PobierzOgloszenia();        
+			return View(ogloszenia);    
+		}    
+		// Tutaj zakomentowany kod/akcje 
+	} 
+	```
 
 ## Etap 3. Krok 2. Zastosowanie kontenera Unity — IoC 
 * Wstrzykiwanie repozytorium poprzez konstruktor w kontrolerze
@@ -334,8 +331,10 @@ public class UnityConfig {
 	#region Unity Container 
 	...
 	#endregion   
-	public static void RegisterTypes(IUnityContainer container)    {        
-container.RegisterType<AccountController>(new InjectionConstructor());        container.RegisterType<ManageController>(new InjectionConstructor());        container.RegisterType<IOgloszenieRepo, OgloszenieRepo>(new PerRequestLifetimeManager());    
+	public static void RegisterTypes(IUnityContainer container)    {
+		container.RegisterType<AccountController>(new InjectionConstructor());
+		container.RegisterType<ManageController>(new InjectionConstructor());
+		container.RegisterType<IOgloszenieRepo, OgloszenieRepo>(new PerRequestLifetimeManager());
 } 
 ```	
 
@@ -369,3 +368,95 @@ container.RegisterType<AccountController>(new InjectionConstructor());        co
 		return ogloszenia; 
 	} 
 	```
+
+	- skonfigurowanie kontenera Unity, aby wstrzykiwał w miejsce interfejsu IOglContext instancję klasy OglContext. Po dodaniu metoda wygląda następująco: 
+	```
+	public static void RegisterTypes(IUnityContainer container) {    	
+		container.RegisterType<AccountController>(new InjectionConstructor());
+		container.RegisterType<ManageController>(new InjectionConstructor());
+		container.RegisterType<IOgloszenieRepo, OgloszenieRepo>(new PerRequestLifetimeManager());
+		container.RegisterType<IOglContext, OglContext>(new PerRequestLifetimeManager()); 
+	} 
+	```
+	
+	- Cykl życia obiektu a kontener IoC. W aplikacjach internetowych dane są zazwyczaj pobierane tylko jeden raz i nie ma potrzeby przechowywania obiektu w pamięci po zakończonym żądaniu. Dlatego w metodzie RegisterTypes() ustawiono cykl życia obiektu jako PerRequest zarówno dla kontekstu, jak i repozytorium. Oznacza to, że przy każdym żądaniu zostanie utworzony nowy obiekt, a po zakończeniu żądania kontener IoC automatycznie wywoła metodę `Dispose()`: 
+	```
+	protected override void Dispose(bool disposing) 
+	{    
+		if (disposing)    {        
+			db.Dispose();    
+		}    
+		base.Dispose(disposing); 
+	}
+	```
+	
+
+## Etap 4. Krok 1. Akcje Details, Create, Edit, Delete 
+* Details - odkomentuj akcję Details
+```
+public ActionResult Details(int? id) {    
+	if (id == null)    {        
+		return new HttpStatusCodeResult(HttpStatusCode.BadRequest);    
+	}    
+	Ogloszenie ogloszenie = db.Ogloszenia.Find(id);    
+	if (ogloszenie == null)    {        
+		return HttpNotFound();    
+	}    
+	return View(ogloszenie); 
+} 
+```
+
+* Metoda Details() w repozytorium 
+	- Utwórz metodę w repozytorium, która pobierze ogłoszenie. Dodaj zatem w interfejsie IOgloszenieRepo następującą deklarację metody: 
+	```
+	Ogloszenie GetOgloszenieById(int id); 
+	```
+	
+	- Kolejnym krokiem jest implementacja metody GetOgloszenieById w repozytorium OgloszenieRepo. Dodaj do repozytorium OgloszenieRepo następującą metodę: 
+	```
+	public Ogloszenie GetOgloszenieById(int id) {    
+		Ogloszenie ogloszenie = _db.Ogloszenia.Find(id);    
+		return ogloszenie; 
+	}
+	```
+	
+	- Ostatnim krokiem jest wykorzystanie w kontrolerze nowo dodanej metody . Zamień linijkę: 
+	```
+	Ogloszenie ogloszenie = db.Ogloszenia.Find(id); 
+	``` 
+	na: 
+	```
+	Ogloszenie ogloszenie = _repo.GetOgloszenieById((int)id);
+	```
+	
+* Aktualizacja i optymalizacja SEO dla widoku Details 
+	- Po uruchomieniu aplikacji kliknij przycisk Szczegóły na podstronie z listą ogłoszeń (rysunek 8.82).
+	- Popraw wygląd aplikacji, tak jak zostało to zrobione dla akcji Index (rysunek 8.83, listing 8.7): 
+		- ustaw tytuł, opis i słowa kluczowe, 
+		- przetłumacz linki, 
+		- dodaj kolorowe przyciski za pomocą Bootstrapa, 
+		- wyświetl identyfikator użytkownika w miejsce e-maila.
+		
+* Delete
+	- Odkomentuj metodę Delete
+	```
+	public ActionResult Delete(int? id) {    
+		if (id == null)    
+		{        
+			return new HttpStatusCodeResult(HttpStatusCode.BadRequest);    
+		}    
+		Ogloszenie ogloszenie = _repo.GetOgloszenieById((int)id);    
+		if (ogloszenie == null)    {        
+			return HttpNotFound();    
+		}    
+		return View(ogloszenie); 
+	}
+	```
+
+* Aktualizacja widoku dla akcji Delete 
+	- Kolejnym krokiem jest poprawienie pliku z widokiem Delete (rysunek 8.84, listing 8.8). Ponownie wprowadź te same zmiany co w widoku Details, czyli: 
+		- ustaw tytuł, opis i słowa kluczowe, 
+		- przetłumacz linki, 
+		- dodaj kolorowe przyciski za pomocą Bootstrapa, 
+		- wyświetl identyfikator użytkownika w miejsce e-maila. 
+	
