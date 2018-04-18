@@ -606,7 +606,7 @@ public ActionResult Delete(int? id, bool? blad)
 }
 ```
 
-Teraz zajmij się widokiem. Jeśli ViewBag będzie miał wartość true, to znaczy , że trzeba wyświetlić komunikat o błędzie. Dymek z czerwonym tłem utwórz za pomocą Bootstrapa i klasy 'alert alert-danger'. Dodaj następujący kod pod znacznikiem <h2> do widoku 'Delete.cshtml': 
+Teraz zajmij się widokiem. Jeśli ViewBag będzie miał wartość true, to znaczy , że trzeba wyświetlić komunikat o błędzie. Dymek z czerwonym tłem utwórz za pomocą Bootstrapa i klasy `alert alert-danger`. Dodaj następujący kod pod znacznikiem `<h2>` do widoku `Delete.cshtml`: 
 ```
 @if (ViewBag.Blad == true) 
 {    
