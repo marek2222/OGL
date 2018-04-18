@@ -863,3 +863,467 @@ public ActionResult Edit([Bind(Include = "Id,Tresc,Tytul,DataDodania, Uzytkownik
 }
 ```
 
+* Obsługa błędów dla akcji Edit
+```
+[HttpPost] 
+[ValidateAntiForgeryToken] 
+public ActionResult Edit([Bind(Include = "Id,Tresc,Tytul,DataDodania, UzytkownikId")] Ogloszenie ogloszenie)
+{
+    if (ModelState.IsValid)    {        
+		try        
+		{            
+			// ogloszenie.UzytkownikId = "fdfgd";            
+			_repo.Aktualizuj(ogloszenie);            
+			_repo.SaveChanges();        
+		}        
+		catch        {            
+			ViewBag.Blad = true;            
+			return View(ogloszenie);        
+		}    
+	}    
+	ViewBag.Blad = false;    
+	return View(ogloszenie); 
+} 
+```
+
+Kolejnym krokiem jest aktualizacja pliku z widokiem, aby wyświetlał informacje o błędzie lub o pomyślnej aktualizacji. Wpisz następujący kod pod nagłówkiem `<h2>` w widoku `Edit`: 
+```
+<h2>Edytujesz ogłoszenie nr: @Model.Id</h2> 
+@if (ViewBag.Blad == true) {    
+	<div class="alert alert-danger" role="alert">        
+	Wystąpił błąd podczas edycji.<br />        
+	Spróbuj ponownie.    
+	</div> 
+} 
+else if (ViewBag.Blad == false) {    
+	<div class="alert alert-success" role="alert">        
+	Pomyślnie edytowano.        
+	Twoje ogłoszenie wygląda teraz następująco:    
+	</div> 
+}
+```
+
+* Metoda Aktualizuj() w repozytorium 
+W interfejsie IOgloszenieRepo dodaj deklarację metody: 
+```
+void Aktualizuj(Ogloszenie ogloszenie); 
+```
+
+W repozytorium OgloszenieRepo dodaj metodę: 
+```
+public void Aktualizuj(Ogloszenie ogloszenie) 
+{    
+	_db.Entry(ogloszenie).State = EntityState.Modified; 
+} 
+```
+
+W metodzie trzeba poinformować kontekst, że dane zostały zmienione, a gdy zostanie wywołana metoda `SaveChanges()`, należy zaktualizować dane w bazie danych. Aby możliwe było korzystanie z właściwości Entry, konieczne jest dodanie następującej linii w interfejsie `IOglContext`: 
+```
+DbEntityEntry Entry(object entity); 
+```
+
+Importujemy biblioteki i aplikacja jest gotowa do edycji ogłoszeń. 
+
+
+## Etap 4. Krok 2. Aktualizacja szablonu _Layout.cshtml 
+W pliku _Layout.cshtml znajdującym się w folderze Views/Shared następujący kod: 
+```
+<ul class="nav navbar-nav">    
+	<li>@Html.ActionLink("Home", "Index", "Home")</li>    
+	<li>@Html.ActionLink("About", "About", "Home")</li>    
+	<li>@Html.ActionLink("Contact", "Contact", "Home")</li> 
+</ul> 
+zamień na: 
+<ul class="nav navbar-nav">    
+	<li>@Html.ActionLink("Home", "Index", "Home")</li>    
+	<li class="dropdown">        
+		<a href="#" class="dropdown-toggle" data-toggle="dropdown">Ogłoszenia <span class="caret"></span></a>        
+		<ul class="dropdown-menu" role="menu">            
+			<li>@Html.ActionLink("Lista ogłoszeń", "Index", "Ogloszenie")</li>            
+			@if (User.Identity.IsAuthenticated)            {                
+				<li>@Html.ActionLink("Dodaj ogłoszenie", "Create", "Ogloszenie")</li>            
+			}
+            <li class="divider"></li>            
+			<li>@Html.ActionLink("Lista jako PartialView", "Partial", "Ogloszenie") </li>        
+		</ul>    
+	</li> 
+</ul> 
+```
+
+## Etap 4. Krok 3. Widoki częściowe — PartialViews 
+Utworzysz teraz widok PartialView. Dodaj nową akcję do kontrolera `OgloszenieController` o nazwie `Partial`. Podobnie jak w akcji Index, pobierz dane z repozytorium za pomocą metody `PobierzOgloszenia()`. Jedyną różnicą będzie zwracany typ — zamiast View będzie to PartialView. Kod akcji Partial: 
+```
+// GET: /Ogloszenie/ 
+public ActionResult Partial() 
+{    
+	var ogloszenia = _repo.PobierzOgloszenia();    
+	return PartialView("Index", ogloszenia); 
+} 
+```
+
+Wykorzystałeś ten sam plik z widokiem, a więc plik o nazwie Index. W poprzednich akcjach nazwa widoku była taka sama jak nazwa akcji, dlatego nie trzeba było podawać nazwy widoku jako pierwszego parametru w metodzie return View(). Gdyby został utworzony osobny plik z widokiem o nazwie Partial w folderze Views/Ogloszenie, wystarczyłoby zwrócić: 
+```
+return PartialView(ogloszenia); 
+```
+
+## Etap 5. Bezpieczeństwo, uwierzytelnianie i autoryzacja dostępu
+Ważnym elementem jest bezpieczeństwo aplikacji. Obecnie każdy zalogowany użytkownik może dodać, usunąć lub edytować ogłoszenie. Aplikacja zostanie tak zabezpieczona, aby tylko właściciel mógł edytować i usuwać swoje ogłoszenia. Dodamy widok, w którym będą wyświetlane tylko ogłoszenia aktualnie zalogowanego użytkownika. Ukryjemy i zablokujemy opcje Usuń i Edytuj dla niezalogowanych użytkowników na liście ogłoszeń. Rozpoczniemy od uwierzytelniania i autoryzacji dostępu za pomocą ról. 
+
+* Uwierzytelnianie i logowanie przez portale 
+Na początek będzie to uwierzytelnianie, czyli założenie konta na portalu. 
+
+* Rejestracja nowego użytkownika 
+Aby założyć konto na portalu, kliknij w prawym rogu Register, co powoduje wyświetlenie strony rejestracji 
+
+* Autoryzacja — role 
+Autoryzacja polega na określeniu, czy dany użytkownik ma dostęp do wybranego zasobu bądź podstrony . W aplikacji w metodzie Seed uruchamianej podczas migracji utworzono użytkownika Admin i rolę Administrator. Teraz dodamy rolę Pracownik. Dodaj następujący kod w metodzie `SeedRoles()`: 
+```
+if (!roleManager.RoleExists("Pracownik")) {    
+	var role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole();    
+	role.Name = "Pracownik";    
+	roleManager.Create(role); 
+} 
+```
+
+Możliwe jest dodanie nowego użytkownika, takiego jak np. Marek, który będzie przypisany do roli Pracownik i będzie posiadał e-mail marek@AspNetMvc.pl, oraz np. użytkownika Prezes, który będzie przypisany do roli Admin i będzie posiadał email prezes@AspNetMvc.pl. Dodaj kod do metody SeedUsers(): 
+```
+if (!context.Users.Any(u => u.UserName == "Marek")) {    
+	var user = new Uzytkownik { UserName = "marek@AspNetMvc.pl"};    
+	var adminresult = manager.Create(user, "1234Abc,");    
+	if (adminresult.Succeeded)        
+		manager.AddToRole(user.Id, "Pracownik"); 
+} 
+if (!context.Users.Any(u => u.UserName == "Prezes")) {    
+	var user = new Uzytkownik { UserName = "prezes@AspNetMvc.pl" };    
+	var adminresult = manager.Create(user, "1234Abc,");    
+	if (adminresult.Succeeded)        
+		manager.AddToRole(user.Id, "Admin"); 
+} 
+```
+
+Następnie uruchom migrację komendą Update-Database.
+
+
+* Zabezpieczanie akcji 
+Ustalono następujące ogólne zasady: 
+	-admin (rola Admin, e-mail prezes@AspNetMvc.pl) może wszystko (Szczegóły, Edytuj i Usuń); 
+	- pracownik (rola Pracownik, e-mail Marek@AspNetMvc.pl) może tylko edytować i dodawać, nie może usuwać ogłoszeń; 
+	- zwykły użytkownik nieprzypisany do żadnej roli może wszystko (Szczegóły, Edytuj i Usuń), ale tylko dla ogłoszeń dodanych przez siebie; 
+	- Admin i Pracownik mogą operować na wszystkich ogłoszeniach bez względu na autora. 
+
+* Index 
+W widoku do akcji Index dla konta Admin będą widoczne wszystkie linki do akcji Szczegóły, Edytuj i Usuń. Istnieje także możliwość dodawania ogłoszenia. Dla konta Pracownik link do usuwania nie będzie widoczny. Natomiast zwykły użytkownik będzie miał dostępny tylko przycisk Szczegóły. Oto zmieniony kod:
+```
+@Html.ActionLink("Szczegóły", "Details", new { id = item.Id }, new { @class = "btn btn-warning" }) 
+@if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("Pracownik"))) 
+{    
+	<br />    
+	@Html.ActionLink("Edytuj ", "Edit", new { id = item.Id }, new { @class = "btn btn-primary" })    
+	if (User.IsInRole("Admin"))    {        
+		<br />        
+		@Html.ActionLink("Usuń", "Delete", new { id = item.Id }, new { @class = "btn btn-danger" })    
+	} 
+} 
+```
+	
+oraz dla przycisku Create:
+```
+@if (User.Identity.IsAuthenticated) {    
+	<p> @Html.ActionLink("Dodaj nowe ogłoszenie", "Create", null, new { @class = "btn btn-primary" })  </p> 
+} 
+```
+
+* Details 
+W akcji Details znajdują się tylko przyciski Wróć i Edytuj. Należy ukryć przycisk Edytuj dla niezalogowanych użytkowników i tych, którzy są zalogowani, ale nie są autorami ogłoszenia. Jednocześnie musi on być widoczny dla zalogowanych użytkowników, którzy nie są autorami, aby zaprezentować zabezpieczenie po stronie kontrolera.
+Oto zmieniony kod:
+```
+<p>    @if (User.Identity.IsAuthenticated || User.IsInRole("Admin") ||User.IsInRole("Pracownik"))    
+{        
+	@Html.ActionLink("Edytuj", "Edit", new { id = Model.Id }, new { @class = "btn btn-primary" })        
+	@: |    
+}        
+@Html.ActionLink("Wróć", "Index", null, new { @class = "btn btn-warning" }) 
+</p> 
+```
+	
+* Edit
+Aby zabezpieczyć aplikację, musisz zaktualizować metody GET i POST dla akcji Edit. Dodaj atrybut `[Authorize]` do metod GET i POST dla akcji Edit, aby nie było możliwości wyświetlenia strony edycji dla niezalogowanych użytkowników. 
+
+Teraz można edytować dowolne ogłoszenie, nawet nie swoje. Aby zabezpieczyć metodę, trzeba sprawdzić, czy Id zalogowanego użytkownika jest takie samo jak IdUzytkownika zapisane w ogłoszeniu. Po pobraniu użytkownika z bazy danych i sprawdzeniu, czy nie została zwrócona wartość null, zaktualizuj metodę do postaci: 
+```
+[Authorize]
+public ActionResult Edit(int? id) 
+	if (id == null)    {        
+		return new HttpStatusCodeResult(HttpStatusCode.BadRequest);    
+	}    
+	Ogloszenie ogloszenie = _repo.GetOgloszenieById((int)id);    
+	if (ogloszenie == null)    {        
+		return HttpNotFound();    
+	}    
+	else if (ogloszenie.UzytkownikId != User.Identity.GetUserId()  
+			&& ! (User.IsInRole("Admin") || User.IsInRole("Pracownik")))    {        
+		return new HttpStatusCodeResult(HttpStatusCode.BadRequest);    
+	}    
+	return View(ogloszenie); 
+}
+```
+
+* Create 
+Akcja Create została już wcześniej zabezpieczona poprzez binding ([Bind(Include="")]), atrybut [Authorize] oraz AntiForgeryToken. Jest ona dostępna dla wszystkich użytkowników oprócz tych, którzy nie są zalogowani, dlatego nie ma specjalnych wymogów co do bezpieczeństwa. 
+
+* Delete 
+Jako ostatnia zostanie zabezpieczona akcja Delete. Usuwać ogłoszenia może tylko Admin lub właściciel. Sytuacja wygląda bardzo podobnie jak z Edytuj, jednak Pracownik nie może usuwać (edytować mógł). 
+
+Po aktualizacji kod akcji wygląda następująco: 
+```
+[Authorize] 
+public ActionResult Delete(int? id, bool? blad) 
+{    
+	if (id == null)    {        
+		return new HttpStatusCodeResult(HttpStatusCode.BadRequest);    
+	}    
+	Ogloszenie ogloszenie = _repo.GetOgloszenieById((int)id);    
+	if (ogloszenie == null)    {        
+		return HttpNotFound();    
+	}    
+	else if (ogloszenie.UzytkownikId != User.Identity.GetUserId() && !User.IsInRole("Admin"))    {        
+		return new HttpStatusCodeResult(HttpStatusCode.BadRequest);    
+	}    
+	if(blad !=null)        
+		ViewBag.Blad = true;    
+	return View(ogloszenie); 
+}
+```
+
+Od teraz tylko autor i admin mogą usuwać ogłoszenia, pozostali użytkownicy oraz pracownicy dostaną odpowiedni komunikat 
+
+## Etap 5. Podsumowanie 
+W widokach pokazują się tylko te linki, z których może korzystać dany użytkownik. W widoku Details link Edytuj został specjalnie pozostawiony dla wszystkich, aby zademonstrować zabezpieczenie po stronie akcji w kontrolerze, dlatego teraz to poprawimy. Oto zmieniony kod:
+```
+<p>    
+@if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") 
+|| User.IsInRole("Pracownik") || Model.UzytkownikId == User.Identity.GetUserId()))    { 
+	@Html.ActionLink("Edytuj", "Edit", new { id = Model.Id }, new @class = "btn btn-primary" })        
+	@: |    
+}    
+@Html.ActionLink("Wróć", "Index", null, new { @class = "btn btn-warning" }) 
+</p> 
+```
+
+Na samej górze widoku dodaj dyrektywę using, dzięki której będzie można odczytać Id aktualnie zalogowanego użytkownika: `@using Microsoft.AspNet.Identity;` Kod widoku po dodaniu dyrektywy (początek) wygląda następująco: 
+```
+@model Repozytorium.Models.Ogloszenie 
+@using Microsoft.AspNet.Identity; 
+@{    
+	ViewBag.Tytul = "Szczegóły ogłoszenia nr:" + Model.Id;    
+	ViewBag.Opis = "Szczegóły ogłoszenia nr:" + Model.Id + " Opis do Goole";    
+	ViewBag.SlowaKluczowe = "Ogłoszenie, " + Model.Id + ", szczegóły"; 
+} 
+```
+
+
+## Etap 6. Stronicowanie i sortowanie 
+
+* Stronicowanie 
+Aplikacja jest zabezpieczona, jednak na liście ogłoszeń pobierane są wszystkie ogłoszenia. Dodamy zatem stronicowanie (paginację), aby nie pobierać wszystkich danych naraz. 
+
+* Dodanie metody do repozytorium 
+Na początek do repozytorium trzeba dodać metodę, która będzie pobierała wybraną liczbę kolejnych elementów dla poszczególnych numerów stron. Do interfejsu IOgloszenieRepo dodaj deklarację metody PobierzStrone(): 
+```
+IQueryable<Ogloszenie> PobierzStrone(int? page, int? pageSize); 
+```
+
+Do repozytorium OgloszenieRepo dodaj metodę: 
+```
+public IQueryable<Ogloszenie> PobierzStrone(int? page = 1, int? pageSize = 10) 
+{    
+	var ogloszenia = _db.Ogloszenia        
+			.OrderByDescending(o => o.DataDodania)        
+			.Skip((page.Value - 1) * pageSize.Value)        
+			.Take(pageSize.Value);    
+			return ogloszenia; 
+} 
+```
+
+* Aktualizacja kontrolera 
+Przerobimy akcję Index w kontrolerze, aby przyjmowała jeden opcjonalny parametr, czyli numer strony , oraz wywoływała nową metodę z repozytorium. Kod akcji po zmianach wygląda jak poniżej: 
+```
+public ActionResult Index(int? page) 
+{    
+	int currentPage = page ?? 1;    
+	int naStronie = 5;    
+	var ogloszenia = _repo.PobierzStrone(currentPage,naStronie);    
+	return View(ogloszenia); 
+} 
+```
+
+W kodzie ustawiono liczbę ogłoszeń na jednej stronie na wartość 5. 
+
+
+* Instalacja i użycie pakietu PagedList.Mvc
+Zmień model danych dla widoku Index z: 
+`@model IEnumerable<Repozytorium.Models.Ogloszenie>` 
+na: 
+`@model PagedList.IPagedList<Repozytorium.Models.Ogloszenie>` 
+
+i dodaj dyrektywę: 
+`@using PagedList.Mvc;` 
+oraz plik ze stylami: 
+`<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />` 
+Ostatecznie nagłówek wygląda następująco: 
+```
+@model PagedList.IPagedList<Repozytorium.Models.Ogloszenie> 
+@using PagedList.Mvc; 
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+```
+
+W kolejnym kroku trzeba przerobić helpery DisplayNameFor(), ponieważ nie radzą sobie z PagedList. Dodaj [0], aby określić, że mają wyświetlić nazwę dla pierwszego elementu z kolekcji: 
+```
+<tr>    
+	<th>        @Html.DisplayNameFor(model => model[0].UzytkownikId)    </th>    
+	<th>        @Html.DisplayNameFor(model => model[0].Tresc)    </th>    
+	<th>        @Html.DisplayNameFor(model => model[0].Tytul)    </th>    
+	<th>        @Html.DisplayNameFor(model => model[0].DataDodania)    </th>    
+	<th></th>
+</tr> 
+```
+
+Teraz dodaj linki do stronicowania. Na samym końcu pliku wpisz następujący kod: 
+```
+<div>    
+	<br />    
+	Strona @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) z @Model.PageCount    @Html.PagedListPager(Model, page => Url.Action("Index",new { page})) 
+</div>
+```
+
+Teraz czas zająć się akcją Index. Przejdź do kontrolera OgloszenieController. Dodaj dyrektywę: 
+```
+using PagedList; 
+```
+
+Następnym krokiem będzie aktualizacja akcji Index. Nie trzeba już dodatkowej metody z repozytorium PobierzStrone(), ponieważ PagedList sam sobie generuje zapytania. Zamieniamy ją na metodę pobierającą wszystkie ogłoszenia o nazwie PobierzOgloszenia(). Następnie, aby możliwa była paginacja, konieczne jest ustalenie kolejności, czyli pola, po którym będą sortowane dane. W tym przypadku będzie to data dodania (malejąco). Na końcu trzeba wywołać metodę: 
+```
+	.ToPagedList<Ogloszenie>(currentPage, naStronie); 
+```
+
+Kod akcji po zmianach: 
+```
+public ActionResult Index(int? page) 
+{    
+	int currentPage = page ?? 1;    
+	int naStronie = 3;    
+	var ogloszenia = _repo.PobierzOgloszenia();
+	ogloszenia = ogloszenia.OrderByDescending(d=>d.DataDodania);    
+	return View(ogloszenia.ToPagedList<Ogloszenie>(currentPage, naStronie)); 
+}
+```
+
+Należy teraz dostosować do PagedList akcję o nazwie Partial z kontrolera OgloszenieController zwracającą widok PartialView, ponieważ korzysta z tego samego pliku z widokiem. Kod po zmianach: 
+```
+// GET: /Ogloszenie/ 
+public ActionResult Partial(int? page) {    
+	int currentPage = page ?? 1;        
+	int naStronie = 3;        
+	var ogloszenia = _repo.PobierzOgloszenia();        
+	ogloszenia = ogloszenia.OrderByDescending(d => d.DataDodania);        
+	return PartialView("Index", ogloszenia.ToPagedList<Ogloszenie>(currentPage, naStronie)); 
+}
+```
+
+* Sortowanie 
+Sortowanie zostanie zaimplementowane w widoku Lista ogłoszeń, a więc w akcji Index z kontrolera OgloszenieController. 
+
+* Aktualizacja kontrolera 
+Aby zaimplementować sortowanie, wykorzystamy ViewBag, w których będzie można przekazywać nazwę pola, po jakim mają zostać posortowane dane. Do akcji Index trzeba dodać parametr o nazwie sortOrder typu string przechowujący nazwę pola, po którym się sortuje. 
+Kod po zmianach: 
+```
+public ActionResult Index(int? page, string sortOrder) 
+{
+    int currentPage = page ?? 1;    
+	int naStronie = 3;    
+	ViewBag.CurrentSort = sortOrder;    
+	ViewBag.IdSort = String.IsNullOrEmpty(sortOrder) ? "IdAsc" : "";    
+	ViewBag.DataDodaniaSort = sortOrder == "DataDodania" ? "DataDodaniaAsc" : "DataDodania";
+    ViewBag.TrescSort = sortOrder == "TrescAsc" ? "Tresc" : "TrescAsc";    
+	ViewBag.TytulSort = sortOrder == "TytulAsc" ? "Tytul" : "TytulAsc";    
+	var ogloszenia = _repo.PobierzOgloszenia();    
+	switch (sortOrder)    {        
+		case "DataDodania":            
+			ogloszenia = ogloszenia.OrderByDescending(s => s.DataDodania);            
+			break;        
+		case "DataDodaniaAsc":            
+			ogloszenia = ogloszenia.OrderBy(s => s.DataDodania);            
+			break;        
+		case "Tytul":            
+			ogloszenia = ogloszenia.OrderByDescending(s => s.Tytul);            
+			break;        
+		case "TytulAsc":            
+			ogloszenia = ogloszenia.OrderBy(s => s.Tytul);            
+			break;        
+		case "Tresc":            
+			ogloszenia = ogloszenia.OrderByDescending(s => s.Tresc);            
+			break;        
+		case "TrescAsc":            
+			ogloszenia = ogloszenia.OrderBy(s => s.Tresc);            
+			break;        
+		case "IdAsc":            
+			ogloszenia = ogloszenia.OrderBy(s => s.Id);            
+			break;        
+		default: 
+			// id descending            
+			ogloszenia = ogloszenia.OrderByDescending(s => s.Id);            
+			break;    
+	}    
+	return View(ogloszenia.ToPagedList<Ogloszenie>(currentPage, naStronie));
+} 
+```
+
+* Aktualizacja widoku 
+Aktualizacja widoku Mając gotowy kontroler, trzeba zaktualizować kod widoku, aby w linkach do stronicowania i sortowania przekazywał wartość sortOrder. 
+Kompletny kod widoku:
+```
+@model PagedList.IPagedList<Repozytorium.Models.Ogloszenie> 
+@using PagedList.Mvc; 
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" /> 
+@{    
+	ViewBag.Tytul = "Lista ogłoszeń - metatytuł do 60 znaków";    
+	ViewBag.Opis = "Lista ogłoszeń z naszej aplikacji - metaopis do 160 znaków";    
+	ViewBag.SlowaKluczowe = "Lista, ogłoszeń, słowa, kluczowe, aplikacja"; 
+} 
+<h2>Lista ogłoszeń</h2> 
+@if (User.Identity.IsAuthenticated) {    
+<p>        
+	@Html.ActionLink("Dodaj nowe ogłoszenie", "Create", null, new { @class = "btn btn-primary" })    </p> 
+} 
+<table class="table">    
+	<tr>        
+		<th>@Html.ActionLink("Id użytkownika", "Index", new  { sortOrder = ViewBag.IdSort } </th>        
+		<th>@Html.ActionLink("Treść", "Index", new { sortOrder = ViewBag.TrescSort })        </th>        
+		<th>@Html.ActionLink("Tytuł", "Index", new { sortOrder = ViewBag.TytulSort })        </th>        <th>@Html.ActionLink("Data dodania", "Index", new { sortOrder = ViewBag.DataDodaniaSort })</th>        
+		<th></th>
+    </tr> 
+	@foreach (var item in Model) {    
+		<tr>
+			<td>@Html.DisplayFor(modelItem => item.UzytkownikId)</td>        
+			<td>@Html.DisplayFor(modelItem => item.Tresc)       </td>        
+			<td>@Html.DisplayFor(modelItem => item.Tytul)       </td>        
+			<td>@Html.DisplayFor(modelItem => item.DataDodania) </td>        
+			<td>@Html.ActionLink("Szczegóły", "Details", new { id = item.Id }, new { @class = "btn btn-warning" })            
+			@if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("Pracownik"))) {                		
+				<br />@Html.ActionLink("Edytuj ", "Edit", new { id = item.Id }, new { @class = "btn btn-primary" })                
+				if (User.IsInRole("Admin"))                {                    
+					<br />@Html.ActionLink("Usuń", "Delete", new { id = item.Id }, new { @class = "btn btn-danger" })                
+				}            
+			} </td>    
+		</tr> 
+	} 
+</table> 
+<div>   
+	<br />    
+	Strona @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) z @Model.PageCount
+   @Html.PagedListPager(Model, page => Url.Action("Index", new { page, sortOrder = ViewBag.CurrentSort}))
+</div> 
+```
+
+
+Etap 7. Ogłoszenia użytkownika, kategorie, cache i ViewModel Zakładka Moje ogłoszenia 
